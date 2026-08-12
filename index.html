@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Shod Mebel — Modern Furniture Store</title>
+    <!-- Telegram WebApp JS -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app" class="app-container">
+        <!-- HEADER -->
+        <header class="header" id="header">
+            <div class="header-brand" id="headerBrand">
+                <h1 class="brand-title">Shod Mebel</h1>
+                <span class="brand-subtitle">Modern furniture</span>
+            </div>
+            
+            <div class="header-actions">
+                <button class="icon-btn" id="searchToggleBtn" aria-label="Qidirish">
+                    <i data-lucide="search"></i>
+                </button>
+                <button class="icon-btn" id="favoritesToggleBtn" aria-label="Saralanganlar">
+                    <i data-lucide="heart"></i>
+                    <span class="badge badge-fav hidden" id="favoritesBadge">0</span>
+                </button>
+                <button class="icon-btn cart-btn" id="cartToggleBtn" aria-label="Savat">
+                    <i data-lucide="shopping-bag"></i>
+                    <span class="badge badge-cart hidden" id="cartBadge">0</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- EXPANDABLE SEARCH BAR -->
+        <div class="search-bar-container hidden" id="searchBarContainer">
+            <div class="search-input-wrapper">
+                <i data-lucide="search" class="search-icon"></i>
+                <input type="text" id="searchInput" placeholder="Mebel qidirish (nom, material, tur)..." autocomplete="off">
+                <button class="clear-btn hidden" id="searchClearBtn" aria-label="Tozalash">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <button class="filter-btn" id="openFilterBtn">
+                <i data-lucide="sliders-horizontal"></i>
+                <span>Filtr</span>
+            </button>
+        </div>
+
+        <!-- HERO SECTION -->
+        <section class="hero-section" id="heroSection">
+            <div class="hero-content">
+                <span class="hero-tag">Premium To'plam</span>
+                <h2 class="hero-title">Make your home feel better.</h2>
+                <p class="hero-subtitle">Modern furniture designed for comfort and everyday life.</p>
+                <button class="btn btn-hero" id="heroCtaBtn">
+                    <span>Explore Furniture</span>
+                    <i data-lucide="arrow-down-right"></i>
+                </button>
+            </div>
+            <div class="hero-bg-decoration"></div>
+        </section>
+
+        <!-- CATEGORY NAVIGATION -->
+        <nav class="category-nav-wrapper">
+            <div class="category-nav" id="categoryNav">
+                <!-- Categories dynamically injected via JS -->
+            </div>
+        </nav>
+
+        <!-- ACTIVE FILTER BAR -->
+        <div class="active-filters-bar hidden" id="activeFiltersBar">
+            <span class="filter-tag-label" id="filterStatusText">Filtrlar qo'llandi</span>
+            <button class="btn-text-sm" id="resetFiltersBtn">Tozalash</button>
+        </div>
+
+        <!-- MAIN CONTENT / PRODUCT GRID -->
+        <main class="main-content">
+            <div class="products-header">
+                <h3 class="section-title" id="sectionTitle">Barcha Mebellar</h3>
+                <span class="product-count" id="productCount">0 ta mahsulot</span>
+            </div>
+
+            <div class="product-grid" id="productGrid">
+                <!-- Products dynamically rendered here -->
+            </div>
+
+            <!-- EMPTY CATEGORY / NO RESULTS STATE -->
+            <div class="empty-state hidden" id="emptyState">
+                <div class="empty-icon-wrapper">
+                    <i data-lucide="package-search"></i>
+                </div>
+                <h3>No furniture found</h3>
+                <p>There are currently no products matching your selected criteria.</p>
+                <button class="btn btn-secondary" id="emptyStateResetBtn">View All Furniture</button>
+            </div>
+
+            <!-- ERROR STATE -->
+            <div class="error-state hidden" id="errorState">
+                <div class="empty-icon-wrapper error">
+                    <i data-lucide="alert-circle"></i>
+                </div>
+                <h3>Something went wrong</h3>
+                <p>Please try again or check your network connection.</p>
+                <button class="btn btn-primary" id="retryBtn">Try Again</button>
+            </div>
+        </main>
+
+        <!-- PRODUCT DETAILS BOTTOM SHEET MODAL -->
+        <div class="sheet-overlay hidden" id="productModalOverlay">
+            <div class="bottom-sheet product-sheet" id="productSheet">
+                <div class="sheet-handle-area" id="productSheetHandle">
+                    <div class="sheet-handle"></div>
+                    <button class="close-sheet-btn" id="closeProductSheetBtn" aria-label="Yopish">
+                        <i data-lucide="x"></i>
+                    </button>
+                </div>
+
+                <div class="sheet-scroll-content" id="productModalContent">
+                    <!-- Media Carousel -->
+                    <div class="gallery-container">
+                        <div class="gallery-track" id="galleryTrack"></div>
+                        <div class="gallery-indicators" id="galleryIndicators"></div>
+                        <button class="fav-float-btn" id="modalFavBtn" aria-label="Saralangan">
+                            <i data-lucide="heart"></i>
+                        </button>
+                    </div>
+
+                    <div class="product-detail-body">
+                        <div class="detail-header">
+                            <div class="detail-badge-wrap">
+                                <span class="badge-tag" id="modalBadge">TAYYOR</span>
+                                <span class="category-pill" id="modalCategory">Yotoqxona</span>
+                            </div>
+                            <h2 class="detail-title" id="modalTitle">Modern Bedroom Set</h2>
+                            <div class="detail-price-row">
+                                <span class="detail-price" id="modalPrice">4,500,000 so'm</span>
+                            </div>
+                        </div>
+
+                        <!-- Specs Grid -->
+                        <div class="specs-grid">
+                            <div class="spec-card">
+                                <i data-lucide="ruler"></i>
+                                <span class="spec-label">O'lchamlar</span>
+                                <strong class="spec-value" id="modalDimensions">240 × 220 × 60 cm</strong>
+                            </div>
+                            <div class="spec-card">
+                                <i data-lucide="layers"></i>
+                                <span class="spec-label">Material</span>
+                                <strong class="spec-value" id="modalMaterial">MDF + LDSP</strong>
+                            </div>
+                            <div class="spec-card">
+                                <i data-lucide="settings"></i>
+                                <span class="spec-label">Mexanizm</span>
+                                <strong class="spec-value" id="modalMechanism">Soft-close</strong>
+                            </div>
+                            <div class="spec-card">
+                                <i data-lucide="shield-check"></i>
+                                <span class="spec-label">Kafolat</span>
+                                <strong class="spec-value" id="modalWarranty">12 oy</strong>
+                            </div>
+                            <div class="spec-card">
+                                <i data-lucide="clock"></i>
+                                <span class="spec-label">Tayyorlanish</span>
+                                <strong class="spec-value" id="modalProduction">7–10 kun</strong>
+                            </div>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="detail-section">
+                            <h4 class="detail-section-title">Tavsif</h4>
+                            <p class="detail-description" id="modalDescription">
+                                Zamonaviy va qulay yotoqxona mebellari to'plami. Ixcham va nafis dizayn.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sticky Bottom Action Bar -->
+                <div class="sheet-footer">
+                    <div class="quantity-selector">
+                        <button class="qty-btn" id="modalQtyMinus" aria-label="Kamaytirish"><i data-lucide="minus"></i></button>
+                        <span class="qty-value" id="modalQtyVal">1</span>
+                        <button class="qty-btn" id="modalQtyPlus" aria-label="Oshirish"><i data-lucide="plus"></i></button>
+                    </div>
+                    <button class="btn btn-primary btn-add-cart" id="modalAddToCartBtn">
+                        <i data-lucide="shopping-bag"></i>
+                        <span>Savatga qo'shish</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- CART BOTTOM SHEET MODAL -->
+        <div class="sheet-overlay hidden" id="cartModalOverlay">
+            <div class="bottom-sheet cart-sheet" id="cartSheet">
+                <div class="sheet-handle-area">
+                    <div class="sheet-handle"></div>
+                    <div class="sheet-header-title">
+                        <h3>Savat</h3>
+                        <span class="cart-subtitle" id="cartSubtitle">0 ta mahsulot</span>
+                    </div>
+                    <button class="close-sheet-btn" id="closeCartSheetBtn" aria-label="Yopish">
+                        <i data-lucide="x"></i>
+                    </button>
+                </div>
+
+                <div class="sheet-scroll-content">
+                    <div class="cart-items-list" id="cartItemsList">
+                        <!-- Dynamic Cart items -->
+                    </div>
+
+                    <!-- Cart Empty State -->
+                    <div class="empty-cart-view hidden" id="emptyCartView">
+                        <div class="empty-icon-wrapper">
+                            <i data-lucide="shopping-bag"></i>
+                        </div>
+                        <h3>Savatingiz bo'sh</h3>
+                        <p>Xaridni davom ettirish uchun mebellar katalogimizdan tanlang.</p>
+                        <button class="btn btn-primary" id="browseFromCartBtn">Mebellarni ko'rish</button>
+                    </div>
+                </div>
+
+                <!-- Cart Summary & Checkout Bar -->
+                <div class="cart-footer hidden" id="cartFooter">
+                    <div class="cart-summary-box">
+                        <div class="summary-row">
+                            <span>Mahsulotlar:</span>
+                            <span id="cartSummaryCount">0 ta</span>
+                        </div>
+                        <div class="summary-row total-row">
+                            <span>Jami summa:</span>
+                            <span id="cartSummaryTotal" class="total-amount">0 so'm</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-checkout" id="cartCheckoutBtn">
+                        <span>Buyurtma berish</span>
+                        <i data-lucide="arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- FILTER & SORT BOTTOM SHEET MODAL -->
+        <div class="sheet-overlay hidden" id="filterModalOverlay">
+            <div class="bottom-sheet filter-sheet" id="filterSheet">
+                <div class="sheet-handle-area">
+                    <div class="sheet-handle"></div>
+                    <h3 class="sheet-title-text">Filtr va Saralash</h3>
+                    <button class="close-sheet-btn" id="closeFilterSheetBtn" aria-label="Yopish">
+                        <i data-lucide="x"></i>
+                    </button>
+                </div>
+
+                <div class="sheet-scroll-content">
+                    <!-- Sort By -->
+                    <div class="filter-group">
+                        <label class="filter-label">Saralash tartibi</label>
+                        <div class="filter-options-grid" id="sortOptions">
+                            <button class="filter-chip active" data-sort="recommended">Tavsiya etilgan</button>
+                            <button class="filter-chip" data-sort="price-low">Narx: Arzonroq</button>
+                            <button class="filter-chip" data-sort="price-high">Narx: Qimmatroq</button>
+                            <button class="filter-chip" data-sort="newest">Yangi kelganlar</button>
+                        </div>
+                    </div>
+
+                    <!-- Category Filter -->
+                    <div class="filter-group">
+                        <label class="filter-label">Kategoriya</label>
+                        <div class="filter-options-grid" id="filterCategories">
+                            <!-- Injected dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Custom Order Status Filter -->
+                    <div class="filter-group">
+                        <label class="filter-label">Mavjudlik shakli</label>
+                        <div class="filter-options-grid" id="filterAvailability">
+                            <button class="filter-chip active" data-availability="all">Barchasi</button>
+                            <button class="filter-chip" data-availability="ready">TAYYOR (Mavjud)</button>
+                            <button class="filter-chip" data-availability="custom">ZAKAZGA (Buyurtmaga)</button>
+                        </div>
+                    </div>
+
+                    <!-- Material Filter -->
+                    <div class="filter-group">
+                        <label class="filter-label">Material</label>
+                        <div class="filter-options-grid" id="filterMaterials">
+                            <button class="filter-chip active" data-material="all">Barcha materiallar</button>
+                            <button class="filter-chip" data-material="MDF">MDF</button>
+                            <button class="filter-chip" data-material="LDSP">LDSP</button>
+                            <button class="filter-chip" data-material="Yog'och">Tabiiy yog'och</button>
+                            <button class="filter-chip" data-material="Matol">Mato / Charm</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sheet-footer filter-footer">
+                    <button class="btn btn-secondary" id="resetFilterModalBtn">Tozalash</button>
+                    <button class="btn btn-primary" id="applyFilterModalBtn">Filtrni qo'llash</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAVORITES SHEET MODAL -->
+        <div class="sheet-overlay hidden" id="favoritesModalOverlay">
+            <div class="bottom-sheet favorites-sheet" id="favoritesSheet">
+                <div class="sheet-handle-area">
+                    <div class="sheet-handle"></div>
+                    <div class="sheet-header-title">
+                        <h3>Saralanganlar</h3>
+                        <span class="cart-subtitle" id="favSubtitle">0 ta saqlangan</span>
+                    </div>
+                    <button class="close-sheet-btn" id="closeFavSheetBtn" aria-label="Yopish">
+                        <i data-lucide="x"></i>
+                    </button>
+                </div>
+
+                <div class="sheet-scroll-content">
+                    <div class="cart-items-list" id="favItemsList">
+                        <!-- Dynamic favorites items -->
+                    </div>
+
+                    <div class="empty-cart-view hidden" id="emptyFavView">
+                        <div class="empty-icon-wrapper">
+                            <i data-lucide="heart"></i>
+                        </div>
+                        <h3>Saralangan mebellar yo'q</h3>
+                        <p>O'zingizga yoqqan mebellarni yurakcha tugmasini bosib saqlang.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ORDER SUCCESS MODAL -->
+        <div class="sheet-overlay hidden" id="successModalOverlay">
+            <div class="bottom-sheet success-sheet" id="successSheet">
+                <div class="success-content">
+                    <div class="success-icon-wrapper">
+                        <div class="checkmark-circle">
+                            <i data-lucide="check"></i>
+                        </div>
+                    </div>
+                    <h2 class="success-title">Buyurtmangiz qabul qilindi!</h2>
+                    <p class="success-subtitle">Tez orada operatorimiz siz bilan bog'lanadi va tafsilotlarni tasdiqlaydi.</p>
+
+                    <div class="order-info-card">
+                        <div class="order-info-row">
+                            <span>Buyurtma raqami:</span>
+                            <strong id="orderNumberRef">#SM-1024</strong>
+                        </div>
+                        <div class="order-info-row">
+                            <span>Jami summa:</span>
+                            <strong id="orderSuccessTotal">0 so'm</strong>
+                        </div>
+                        <div class="order-info-row">
+                            <span>Mahsulotlar soni:</span>
+                            <strong id="orderSuccessCount">0 ta</strong>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary btn-block" id="successContinueBtn">
+                        <span>Xaridni davom ettirish</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
