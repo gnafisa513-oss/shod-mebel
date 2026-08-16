@@ -1,10 +1,13 @@
 /**
  * SHOD MEBEL — TELEGRAM MINI APP FRONTEND SCRIPT
- * Vanilla JavaScript implementation
  */
 
+const ADMIN_TELEGRAM_ID = 7771150533;
+const currentUserId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id;
+const isAdmin = currentUserId === ADMIN_TELEGRAM_ID;
+
 // ==========================================
-// 1. PRODUCT DATASET
+// 1. PRODUCT DATASET & CATEGORIES
 // ==========================================
 const PRODUCTS = [
     {
@@ -25,7 +28,7 @@ const PRODUCTS = [
             "https://images.unsplash.com/photo-1540518614846-7ede433c5173?auto=format&fit=crop&w=800&q=80",
             "https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&w=800&q=80"
         ],
-        video: "https://assets.mixkit.co/videos/preview/mixkit-modern-apartment-living-room-41555-large.mp4",
+        video: null,
         isNew: true
     },
     {
@@ -43,8 +46,7 @@ const PRODUCTS = [
         productionTime: "10–14 kun",
         description: "Premium toifasidagi zamonaviy oshxona mebeli. Namlik va issiqqa chidamli akril qoplama va Germaniya furniturasidan foydalanilgan.",
         images: [
-            "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=800&q=80",
-            "https://images.unsplash.com/photo-1556909212-d5b604d0c90d?auto=format&fit=crop&w=800&q=80"
+            "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=800&q=80"
         ],
         video: null,
         isNew: false
@@ -64,8 +66,7 @@ const PRODUCTS = [
         productionTime: "Tayyor (Bugun yetkazish)",
         description: "Minimalistik uslubdagi mustahkam ish stoli. Uy va ofis sharoitida qulay ishlash uchun maxsus mo'ljallangan.",
         images: [
-            "https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&w=800&q=80",
-            "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?auto=format&fit=crop&w=800&q=80"
+            "https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?auto=format&fit=crop&w=800&q=80"
         ],
         video: null,
         isNew: true
@@ -85,133 +86,6 @@ const PRODUCTS = [
         productionTime: "5–7 kun",
         description: "Luks darajadagi burchak divan. Suv va kir yuqmaydigan zamonaviy velur matosi bilan qoplangan.",
         images: [
-            "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80",
-            "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&w=800&q=80"
-        ],
-        video: "https://assets.mixkit.co/videos/preview/mixkit-interior-of-a-modern-living-room-41554-large.mp4",
-        isNew: false
-    },
-    {
-        id: 5,
-        name: "Modern Wardrobe Sliding",
-        category: "bedroom",
-        categoryLabel: "Yotoqxona",
-        price: 3900000,
-        priceType: "fixed",
-        isCustom: false,
-        material: "MDF + Oyna",
-        dimensions: "200 × 220 × 60 cm",
-        mechanism: "Kupe (Sirpanuvchi)",
-        warranty: "12 oy",
-        productionTime: "Tayyor",
-        description: "Keng oyna fasadli kupe shkafi. Kiyimlar va uy anjomlarini tartibli saqlash uchun ideal yechim.",
-        images: [
-            "https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&w=800&q=80",
-            "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=800&q=80"
-        ],
-        video: null,
-        isNew: false
-    },
-    {
-        id: 6,
-        name: "Scandinavian Dining Table",
-        category: "kitchen",
-        categoryLabel: "Oshxona",
-        price: 2400000,
-        priceType: "fixed",
-        isCustom: false,
-        material: "Tabiiy Emanning yog'ochi",
-        dimensions: "160 × 90 × 75 cm",
-        mechanism: "Statsionar",
-        warranty: "24 oy",
-        productionTime: "Tayyor",
-        description: "Skandinaviya uslubidagi ovqatlanish stoli. Tabiiy eman yog'ochidan tayyorlangan va ekologik toza lak bilan qoplangan.",
-        images: [
-            "https://images.unsplash.com/photo-1617806118233-18e1de247200?auto=format&fit=crop&w=800&q=80",
-            "https://images.unsplash.com/photo-1530018607912-eff2daa1bac4?auto=format&fit=crop&w=800&q=80"
-        ],
-        video: null,
-        isNew: true
-    },
-    {
-        id: 7,
-        name: "Comfort Ergonomic Armchair",
-        category: "soft",
-        categoryLabel: "Yumshoq mebel",
-        price: 1500000,
-        priceType: "fixed",
-        isCustom: false,
-        material: "Buk yog'ochi + Bukle mato",
-        dimensions: "85 × 90 × 95 cm",
-        mechanism: "Statsionar",
-        warranty: "12 oy",
-        productionTime: "Tayyor",
-        description: "Dam olish va mutolaa uchun o'ta qulay kreslo. Ergonomik shakl va yumshoq suyanchiqqa ega.",
-        images: [
-            "https://images.unsplash.com/photo-1580481072645-022f9a6d8310?auto=format&fit=crop&w=800&q=80",
-            "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?auto=format&fit=crop&w=800&q=80"
-        ],
-        video: null,
-        isNew: false
-    },
-    {
-        id: 8,
-        name: "Executive Office Cabinet",
-        category: "office",
-        categoryLabel: "Ofis",
-        price: null,
-        priceType: "negotiable",
-        isCustom: true,
-        material: "Shpon + Metal",
-        dimensions: "Loyiha bo'yicha",
-        mechanism: "Premium italiyan",
-        warranty: "36 oy",
-        productionTime: "12–15 kun",
-        description: "Rhbarlar kabineti uchun eksklyuziv mebel to'plami. Individuallik va nufuzni ta'kidlaydi.",
-        images: [
-            "https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=800&q=80",
-            "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80"
-        ],
-        video: null,
-        isNew: true
-    },
-    {
-        id: 9,
-        name: "Custom Soft Bed Frame",
-        category: "bedroom",
-        categoryLabel: "Yotoqxona",
-        price: null,
-        priceType: "size",
-        isCustom: true,
-        material: "Mato Zamsh + Yog'och",
-        dimensions: "O'lchamga qarab",
-        mechanism: "Ko'taruvchi mehanizm (Podyom)",
-        warranty: "18 oy",
-        productionTime: "7–10 kun",
-        description: "Yumshoq bosh qismli karavot. Tagida keng buyumlar saqlash qutisi mavjud.",
-        images: [
-            "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=800&q=80",
-            "https://images.unsplash.com/photo-1540518614846-7ede433c5173?auto=format&fit=crop&w=800&q=80"
-        ],
-        video: null,
-        isNew: false
-    },
-    {
-        id: 10,
-        name: "Compact Modular Sofa",
-        category: "soft",
-        categoryLabel: "Yumshoq mebel",
-        price: 3200000,
-        priceType: "fixed",
-        isCustom: false,
-        material: "Mato Shemill",
-        dimensions: "210 × 95 × 80 cm",
-        mechanism: "Modulli",
-        warranty: "12 oy",
-        productionTime: "Tayyor",
-        description: "Kichik xonadonlar uchun ixcham modulli divan. Qismlarini osongina ajratib ko'chirish mumkin.",
-        images: [
-            "https://images.unsplash.com/photo-1493663284031-b7e3aefcae8e?auto=format&fit=crop&w=800&q=80",
             "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=800&q=80"
         ],
         video: null,
@@ -219,19 +93,19 @@ const PRODUCTS = [
     }
 ];
 
-// CATEGORIES CONSTANT
 const CATEGORIES = [
-    { id: 'all', name: 'Barchasi', label: 'All' },
-    { id: 'bedroom', name: 'Yotoqxona', label: 'Bedroom' },
-    { id: 'kitchen', name: 'Oshxona', label: 'Kitchen' },
-    { id: 'office', name: 'Ofis', label: 'Office' },
-    { id: 'soft', name: 'Yumshoq mebel', label: 'Soft Furniture' }
+    { id: 'all', name: 'Barchasi' },
+    { id: 'bedroom', name: 'Yotoqxona' },
+    { id: 'kitchen', name: 'Oshxona' },
+    { id: 'office', name: 'Ofis' },
+    { id: 'soft', name: 'Yumshoq mebel' }
 ];
 
-// STATE APP
+// APP STATE
 const state = {
-    cart: JSON.parse(localStorage.getItem('shod_cart') || '[]'),
-    favorites: JSON.parse(localStorage.getItem('shod_favs') || '[]'),
+    products: [...PRODUCTS],
+    cart: safeLoadJSON('shod_cart', []),
+    favorites: safeLoadJSON('shod_favs', []),
     activeCategory: 'all',
     searchQuery: '',
     filters: {
@@ -242,11 +116,28 @@ const state = {
     },
     selectedProduct: null,
     selectedQuantity: 1,
+    location: null,
     galleryIndex: 0
 };
 
+// BUG FIX: localStorage.getItem() can return malformed/corrupted JSON (e.g.
+// from a previous app version, or a value edited by hand). The original
+// code called JSON.parse() directly with no try/catch, which would throw
+// and stop the whole script from ever running, leaving a blank screen.
+function safeLoadJSON(key, fallback) {
+    try {
+        const raw = localStorage.getItem(key);
+        if (!raw) return fallback;
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : fallback;
+    } catch (e) {
+        console.warn(`Saqlangan '${key}' ma'lumotini o'qib bo'lmadi, tozalanmoqda.`, e);
+        return fallback;
+    }
+}
+
 // ==========================================
-// 2. TELEGRAM WEBAPP INTEGRATION HELPERS
+// 2. TELEGRAM WEBAPP INTEGRATION
 // ==========================================
 const tg = window.Telegram?.WebApp;
 
@@ -257,7 +148,6 @@ function initTelegramWebApp() {
         tg.ready();
         tg.expand();
 
-        // Theme colors sync
         if (tg.colorScheme === 'dark') {
             document.body.classList.add('dark-theme');
         }
@@ -270,15 +160,8 @@ function initTelegramWebApp() {
             }
         });
 
-        // MainButton Click Handler
-        tg.MainButton.onClick(() => {
-            submitOrder();
-        });
-
-        // BackButton Click Handler
-        tg.BackButton.onClick(() => {
-            handleTelegramBack();
-        });
+        tg.MainButton.onClick(() => openCheckoutSheet());
+        tg.BackButton.onClick(() => handleTelegramBack());
 
     } catch (e) {
         console.warn("Telegram WebApp API Error:", e);
@@ -288,23 +171,20 @@ function initTelegramWebApp() {
 function triggerHaptic(type = 'light') {
     if (tg?.HapticFeedback) {
         try {
-            if (type === 'success') {
-                tg.HapticFeedback.notificationOccurred('success');
+            if (type === 'success' || type === 'error' || type === 'warning') {
+                tg.HapticFeedback.notificationOccurred(type);
             } else {
                 tg.HapticFeedback.impactOccurred(type);
             }
-        } catch (e) {
-            // Ignore if not supported
-        }
+        } catch (e) { }
     }
 }
 
 function updateTelegramMainButton() {
+    if (!tg) return;
     const totalCount = state.cart.reduce((sum, i) => sum + i.quantity, 0);
 
-    if (!tg) return;
-
-    if (totalCount > 0) {
+    if (totalCount > 0 && !isAnyOverlayOpen()) {
         tg.MainButton.setText(`Buyurtma berish (${totalCount})`);
         tg.MainButton.show();
     } else {
@@ -312,100 +192,124 @@ function updateTelegramMainButton() {
     }
 }
 
+const MODAL_IDS = [
+    'productModalOverlay',
+    'cartModalOverlay',
+    'filterModalOverlay',
+    'favoritesModalOverlay',
+    'checkoutModalOverlay',
+    'successModalOverlay',
+    'adminProductModalOverlay'
+];
+
+function isAnyOverlayOpen() {
+    return MODAL_IDS.some(id => !document.getElementById(id)?.classList.contains('hidden'));
+}
+
 function updateTelegramBackButton() {
     if (!tg) return;
-
-    const isAnyModalOpen = !document.getElementById('productModalOverlay').classList.contains('hidden') ||
-        !document.getElementById('cartModalOverlay').classList.contains('hidden') ||
-        !document.getElementById('filterModalOverlay').classList.contains('hidden') ||
-        !document.getElementById('favoritesModalOverlay').classList.contains('hidden') ||
-        !document.getElementById('searchBarContainer').classList.contains('hidden');
-
-    if (isAnyModalOpen) {
+    if (isAnyOverlayOpen()) {
         tg.BackButton.show();
     } else {
         tg.BackButton.hide();
     }
+    updateTelegramMainButton();
+}
+
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.add('hidden');
+        updateTelegramBackButton();
+    }
+}
+
+function openModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.remove('hidden');
+        updateTelegramBackButton();
+    }
 }
 
 function handleTelegramBack() {
-    const modals = [
-        'productModalOverlay',
-        'cartModalOverlay',
-        'filterModalOverlay',
-        'favoritesModalOverlay',
-        'successModalOverlay'
-    ];
-
-    for (const mId of modals) {
+    // BUG FIX: 'successModalOverlay' was missing from this list, so if a
+    // person opened it (once wired up) the hardware/Telegram back button
+    // would skip straight past it to whatever sheet was behind it.
+    for (const mId of MODAL_IDS) {
         const el = document.getElementById(mId);
         if (el && !el.classList.contains('hidden')) {
             closeModal(mId);
             return;
         }
     }
-
-    const searchBar = document.getElementById('searchBarContainer');
-    if (searchBar && !searchBar.classList.contains('hidden')) {
-        searchBar.classList.add('hidden');
-        state.searchQuery = '';
-        document.getElementById('searchInput').value = '';
-        renderProducts();
-        updateTelegramBackButton();
-    }
 }
 
 // ==========================================
-// 3. UTILITY FUNCTIONS
+// 3. UTILITIES & STORAGE
 // ==========================================
-function formatPrice(price, priceType) {
-    if (priceType === 'negotiable') {
-        return "Kelishiladi";
-    }
-    if (priceType === 'size') {
-        return "Narx o'lchamga qarab";
-    }
-    if (typeof price === 'number') {
+function formatPrice(price) {
+    if (typeof price === 'number' && !Number.isNaN(price)) {
         return new Intl.NumberFormat('fr-FR').format(price) + " so'm";
     }
     return "Kelishiladi";
 }
 
 function saveState() {
-    localStorage.setItem('shod_cart', JSON.stringify(state.cart));
-    localStorage.setItem('shod_favs', JSON.stringify(state.favorites));
+    try {
+        localStorage.setItem('shod_cart', JSON.stringify(state.cart));
+        localStorage.setItem('shod_favs', JSON.stringify(state.favorites));
+    } catch (e) {
+        console.warn("Saqlashda xatolik (localStorage to'lgan bo'lishi mumkin):", e);
+    }
 }
 
-function updateBadges() {
-    const totalCartCount = state.cart.reduce((sum, item) => sum + item.quantity, 0);
-    const cartBadge = document.getElementById('cartBadge');
-    if (totalCartCount > 0) {
-        cartBadge.textContent = totalCartCount;
-        cartBadge.classList.remove('hidden');
-    } else {
-        cartBadge.classList.add('hidden');
-    }
-
-    const favCount = state.favorites.length;
-    const favBadge = document.getElementById('favoritesBadge');
-    if (favCount > 0) {
-        favBadge.textContent = favCount;
-        favBadge.classList.remove('hidden');
-    } else {
-        favBadge.classList.add('hidden');
-    }
-
-    updateTelegramMainButton();
-    updateTelegramBackButton();
+function slugify(text) {
+    return (text || '')
+        .toString()
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\u0400-\u04FF']+/g, '-')
+        .replace(/(^-|-$)/g, '') || `cat-${Date.now()}`;
 }
 
 // ==========================================
-// 4. CATEGORIES & PRODUCT RENDERERS
+// TOAST NOTIFICATIONS (replaces alert())
+// ==========================================
+// BUG FIX: the original code used the browser's blocking alert() for every
+// validation message. Inside the Telegram in-app browser this either looks
+// out of place or is silently suppressed depending on the client, so
+// errors like "location is required" could pass unnoticed. A small toast
+// is visible everywhere and never blocks the UI thread.
+function ensureToastStack() {
+    let stack = document.getElementById('toastStack');
+    if (!stack) {
+        stack = document.createElement('div');
+        stack.id = 'toastStack';
+        stack.className = 'toast-stack';
+        document.body.appendChild(stack);
+    }
+    return stack;
+}
+
+function toast(message, type = 'default', duration = 2600) {
+    const stack = ensureToastStack();
+    const el = document.createElement('div');
+    el.className = `toast ${type === 'error' ? 'toast-error' : type === 'success' ? 'toast-success' : ''}`.trim();
+    el.textContent = message;
+    stack.appendChild(el);
+    setTimeout(() => {
+        el.style.opacity = '0';
+        el.style.transition = 'opacity .2s ease';
+        setTimeout(() => el.remove(), 220);
+    }, duration);
+}
+
+// ==========================================
+// 4. RENDERERS
 // ==========================================
 function renderCategories() {
     const categoryNav = document.getElementById('categoryNav');
-    const filterCategoriesContainer = document.getElementById('filterCategories');
-
     if (!categoryNav) return;
 
     categoryNav.innerHTML = CATEGORIES.map(cat => `
@@ -414,176 +318,129 @@ function renderCategories() {
         </button>
     `).join('');
 
-    if (filterCategoriesContainer) {
-        filterCategoriesContainer.innerHTML = CATEGORIES.map(cat => `
-            <button class="filter-chip ${state.filters.category === cat.id ? 'active' : ''}" data-cat="${cat.id}">
-                ${cat.name}
-            </button>
-        `).join('');
-    }
-
-    // Attach click listeners to category chips
     categoryNav.querySelectorAll('.cat-chip').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const catId = e.currentTarget.getAttribute('data-id');
-            state.activeCategory = catId;
-            state.filters.category = catId;
+            setActiveCategory(catId);
             triggerHaptic('light');
-            renderCategories();
-            renderProducts();
         });
     });
 }
 
-function getFilteredProducts() {
-    return PRODUCTS.filter(product => {
-        // Category filter
-        if (state.activeCategory !== 'all' && product.category !== state.activeCategory) {
-            return false;
-        }
+function setActiveCategory(catId) {
+    state.activeCategory = catId;
+    state.filters.category = catId;
+    renderCategories();
+    renderProducts();
+    updateActiveFiltersBar();
+}
 
-        // Availability filter
+function getFilteredProducts() {
+    return state.products.filter(product => {
+        if (state.activeCategory !== 'all' && product.category !== state.activeCategory) return false;
         if (state.filters.availability === 'ready' && product.isCustom) return false;
         if (state.filters.availability === 'custom' && !product.isCustom) return false;
 
-        // Material filter
-        if (state.filters.material !== 'all' && !product.material.toLowerCase().includes(state.filters.material.toLowerCase())) {
-            return false;
+        // BUG FIX: the material filter chips existed in the UI (data-material
+        // attributes) but getFilteredProducts() never actually read
+        // state.filters.material, so choosing a material never filtered anything.
+        if (state.filters.material !== 'all') {
+            const mat = (product.material || '').toLowerCase();
+            if (!mat.includes(state.filters.material.toLowerCase())) return false;
         }
 
-        // Search Query filter
         if (state.searchQuery.trim() !== '') {
             const q = state.searchQuery.toLowerCase();
-            const matchName = product.name.toLowerCase().includes(q);
-            const matchCategory = product.categoryLabel.toLowerCase().includes(q);
-            const matchMaterial = product.material.toLowerCase().includes(q);
-            const matchDesc = product.description.toLowerCase().includes(q);
-
-            if (!matchName && !matchCategory && !matchMaterial && !matchDesc) {
-                return false;
-            }
+            const matchName = product.name?.toLowerCase().includes(q);
+            const matchDesc = product.description?.toLowerCase().includes(q);
+            const matchMaterial = product.material?.toLowerCase().includes(q);
+            const matchCategory = product.categoryLabel?.toLowerCase().includes(q);
+            if (!matchName && !matchDesc && !matchMaterial && !matchCategory) return false;
         }
 
         return true;
     }).sort((a, b) => {
-        if (state.filters.sort === 'price-low') {
-            return (a.price || 0) - (b.price || 0);
-        }
-        if (state.filters.sort === 'price-high') {
-            return (b.price || 0) - (a.price || 0);
-        }
-        if (state.filters.sort === 'newest') {
-            return b.isNew ? 1 : -1;
-        }
-        return 0; // recommended
+        if (state.filters.sort === 'price-low') return (a.price || 0) - (b.price || 0);
+        if (state.filters.sort === 'price-high') return (b.price || 0) - (a.price || 0);
+        // BUG FIX: "Yangi kelganlar" (newest) was a selectable sort chip in the
+        // filter sheet, but there was no branch handling it, so it behaved
+        // identically to "Tavsiya etilgan" (no sort at all).
+        if (state.filters.sort === 'newest') return (b.isNew === a.isNew) ? 0 : (a.isNew ? -1 : 1);
+        return 0;
     });
 }
 
 function renderProducts() {
     const grid = document.getElementById('productGrid');
-    const countLabel = document.getElementById('productCount');
-    const sectionTitle = document.getElementById('sectionTitle');
-    const emptyState = document.getElementById('emptyState');
-
     if (!grid) return;
 
     const filtered = getFilteredProducts();
+    const countEl = document.getElementById('productCount');
+    if (countEl) countEl.textContent = `${filtered.length} ta mahsulot`;
 
-    // Section title update
-    const activeCatObj = CATEGORIES.find(c => c.id === state.activeCategory);
-    sectionTitle.textContent = activeCatObj ? `${activeCatObj.name} Mebellari` : 'Barcha Mebellar';
-    countLabel.textContent = `${filtered.length} ta mahsulot`;
-
-    // Filter indicator bar
-    const activeFiltersBar = document.getElementById('activeFiltersBar');
-    const filterStatusText = document.getElementById('filterStatusText');
-    const isFilterActive = state.filters.availability !== 'all' || state.filters.material !== 'all' || state.filters.sort !== 'recommended';
-
-    if (activeFiltersBar) {
-        if (isFilterActive) {
-            activeFiltersBar.classList.remove('hidden');
-            filterStatusText.textContent = `Saralash: ${state.filters.sort}, Material: ${state.filters.material}`;
-        } else {
-            activeFiltersBar.classList.add('hidden');
-        }
-    }
+    document.getElementById('errorState')?.classList.add('hidden');
 
     if (filtered.length === 0) {
         grid.innerHTML = '';
-        emptyState.classList.remove('hidden');
+        document.getElementById('emptyState')?.classList.remove('hidden');
         return;
+    } else {
+        document.getElementById('emptyState')?.classList.add('hidden');
     }
 
-    emptyState.classList.add('hidden');
-
-    grid.innerHTML = filtered.map(product => {
-        const isFav = state.favorites.includes(product.id);
-        const formattedPrice = formatPrice(product.price, product.priceType);
-        const badgeText = product.isCustom ? 'ZAKAZGA' : 'TAYYOR';
-        const badgeClass = product.isCustom ? 'custom-badge' : 'ready-badge';
+    grid.innerHTML = filtered.map(p => {
+        const isFav = state.favorites.includes(p.id);
+        const formattedPrice = formatPrice(p.price);
+        const imageSrc = (p.images && p.images[0]) ? p.images[0] : (p.media_file_id || 'https://via.placeholder.com/300');
 
         return `
-            <div class="product-card" data-id="${product.id}">
+            <div class="product-card" data-id="${p.id}">
                 <div class="product-media">
-                    <img src="${product.images[0]}" alt="${product.name}" loading="lazy">
-                    <span class="card-badge ${badgeClass}">${badgeText}</span>
-                    ${product.video ? `
-                        <div class="video-tag-indicator" title="Video mavjud">
-                            <i data-lucide="play"></i>
-                        </div>
-                    ` : ''}
-                    <button class="fav-card-btn ${isFav ? 'active' : ''}" data-fav-id="${product.id}" aria-label="Saralangan">
+                    <img src="${imageSrc}" alt="${p.name || p.title}" loading="lazy">
+                    <span class="card-badge ${p.isCustom ? 'custom-badge' : 'ready-badge'}">
+                        ${p.isCustom ? 'ZAKAZGA' : 'TAYYOR'}
+                    </span>
+                    <button class="fav-card-btn ${isFav ? 'active' : ''}" data-fav-id="${p.id}" aria-label="Saralash">
                         <i data-lucide="heart" ${isFav ? 'fill="currentColor"' : ''}></i>
                     </button>
                 </div>
                 <div class="product-info">
-                    <h4 class="product-name">${product.name}</h4>
-                    <span class="product-price-tag">${formattedPrice}</span>
-                    <button class="btn-card-add" data-add-id="${product.id}">
-                        <i data-lucide="shopping-bag"></i>
-                        <span>Savatga</span>
+                    <h4 class="product-name">${p.name || p.title}</h4>
+                    <span class="product-price-tag price-tag price-tag--chip">${formattedPrice}</span>
+                    <button data-add-id="${p.id}" class="btn-card-add">
+                        <i data-lucide="shopping-bag"></i> <span>Savatga</span>
                     </button>
                 </div>
             </div>
         `;
     }).join('');
 
-    // Re-initialize icons
-    if (window.lucide) {
-        window.lucide.createIcons();
-    }
+    if (window.lucide) window.lucide.createIcons();
 
-    // Attach click events
     grid.querySelectorAll('.product-card').forEach(card => {
-        card.addEventListener('click', (e) => {
-            // Ignore if heart or add button clicked
-            if (e.target.closest('.fav-card-btn') || e.target.closest('.btn-card-add')) {
-                return;
-            }
-            const productId = parseInt(card.getAttribute('data-id'));
-            openProductDetailModal(productId);
+        card.addEventListener('click', () => {
+            const pId = parseInt(card.getAttribute('data-id'));
+            openProductDetailModal(pId);
         });
     });
 
-    grid.querySelectorAll('.fav-card-btn').forEach(btn => {
+    grid.querySelectorAll('[data-fav-id]').forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.stopPropagation();
-            const productId = parseInt(btn.getAttribute('data-fav-id'));
-            toggleFavorite(productId);
+            toggleFavorite(parseInt(btn.getAttribute('data-fav-id')));
         });
     });
 
-    grid.querySelectorAll('.btn-card-add').forEach(btn => {
+    grid.querySelectorAll('[data-add-id]').forEach(btn => {
         btn.addEventListener('click', (e) => {
             e.stopPropagation();
-            const productId = parseInt(btn.getAttribute('data-add-id'));
-            addToCart(productId, 1, btn);
+            addToCart(parseInt(btn.getAttribute('data-add-id')), 1, btn);
         });
     });
 }
 
 // ==========================================
-// 5. CART & FAVORITES MANAGERS
+// 5. CART & FAVORITES LOGIC
 // ==========================================
 function toggleFavorite(productId) {
     const index = state.favorites.indexOf(productId);
@@ -597,33 +454,24 @@ function toggleFavorite(productId) {
     updateBadges();
     renderProducts();
     renderFavorites();
-
-    // Sync modal fav btn if open
-    if (state.selectedProduct && state.selectedProduct.id === productId) {
-        const modalFavBtn = document.getElementById('modalFavBtn');
-        if (modalFavBtn) {
-            const isFav = state.favorites.includes(productId);
-            modalFavBtn.classList.toggle('active', isFav);
-        }
-    }
+    syncModalFavButton();
 }
 
-function addToCart(productId, quantity = 1, buttonElement = null) {
-    const product = PRODUCTS.find(p => p.id === productId);
+function addToCart(productId, quantity = 1, btnElement = null) {
+    const product = state.products.find(p => p.id === productId);
     if (!product) return;
 
-    const existingItem = state.cart.find(i => i.id === productId);
+    const existing = state.cart.find(i => i.id === productId);
 
-    if (existingItem) {
-        existingItem.quantity += quantity;
+    if (existing) {
+        existing.quantity += quantity;
     } else {
         state.cart.push({
             id: product.id,
-            name: product.name,
-            price: product.price || 0,
-            priceType: product.priceType,
-            image: product.images[0],
+            title: product.name || product.title,
+            price: product.price,
             isCustom: product.isCustom,
+            image: (product.images && product.images[0]) || product.media_file_id,
             quantity: quantity
         });
     }
@@ -631,507 +479,725 @@ function addToCart(productId, quantity = 1, buttonElement = null) {
     triggerHaptic('light');
     saveState();
     updateBadges();
-    renderCart();
+    toast(`"${product.name || product.title}" savatga qo'shildi`, 'success', 1600);
 
-    // Animate button feedback
-    if (buttonElement) {
-        const span = buttonElement.querySelector('span');
-        const originalText = span ? span.textContent : 'Savatga';
-        buttonElement.classList.add('added');
-        if (span) span.textContent = "✓ Qo'shildi";
-
-        setTimeout(() => {
-            buttonElement.classList.remove('added');
-            if (span) span.textContent = originalText;
-        }, 1200);
+    if (btnElement) {
+        const span = btnElement.querySelector('span');
+        if (span) {
+            const oldText = span.textContent;
+            span.textContent = "✓ Qo'shildi";
+            setTimeout(() => { span.textContent = oldText; }, 1200);
+        }
     }
 }
-window.addToCart = addToCart;
 
-function updateCartQuantity(productId, delta) {
-    const item = state.cart.find(i => i.id === productId);
-    if (!item) return;
-
-    item.quantity += delta;
-
-    if (item.quantity <= 0) {
-        state.cart = state.cart.filter(i => i.id !== productId);
+function updateBadges() {
+    const totalCartCount = state.cart.reduce((sum, item) => sum + item.quantity, 0);
+    const cartBadge = document.getElementById('cartBadge');
+    if (cartBadge) {
+        cartBadge.textContent = totalCartCount;
+        cartBadge.classList.toggle('hidden', totalCartCount === 0);
     }
 
-    triggerHaptic('light');
-    saveState();
-    updateBadges();
-    renderCart();
+    const favCount = state.favorites.length;
+    const favBadge = document.getElementById('favoritesBadge');
+    if (favBadge) {
+        favBadge.textContent = favCount;
+        favBadge.classList.toggle('hidden', favCount === 0);
+    }
+
+    updateTelegramMainButton();
+    updateTelegramBackButton();
 }
 
-function removeFromCart(productId) {
-    state.cart = state.cart.filter(i => i.id !== productId);
-    triggerHaptic('light');
-    saveState();
-    updateBadges();
-    renderCart();
+function openCartSheet() {
+    renderCartItems();
+    openModal('cartModalOverlay');
 }
 
-function calculateCartTotals() {
-    let totalItems = 0;
-    let totalPrice = 0;
-
-    state.cart.forEach(item => {
-        totalItems += item.quantity;
-        totalPrice += (item.price || 0) * item.quantity;
-    });
-
-    return { totalItems, totalPrice };
-}
-
-function renderCart() {
-    const listContainer = document.getElementById('cartItemsList');
+function renderCartItems() {
+    const list = document.getElementById('cartItemsList');
     const emptyView = document.getElementById('emptyCartView');
     const footer = document.getElementById('cartFooter');
     const subtitle = document.getElementById('cartSubtitle');
-    const summaryCount = document.getElementById('cartSummaryCount');
-    const summaryTotal = document.getElementById('cartSummaryTotal');
-
-    if (!listContainer) return;
-
-    const { totalItems, totalPrice } = calculateCartTotals();
-    subtitle.textContent = `${totalItems} ta mahsulot`;
+    if (!list) return;
 
     if (state.cart.length === 0) {
-        listContainer.innerHTML = '';
-        emptyView.classList.remove('hidden');
-        footer.classList.add('hidden');
+        list.innerHTML = '';
+        emptyView?.classList.remove('hidden');
+        footer?.classList.add('hidden');
+        if (subtitle) subtitle.textContent = "0 ta mahsulot";
         return;
     }
 
-    emptyView.classList.add('hidden');
-    footer.classList.remove('hidden');
+    emptyView?.classList.add('hidden');
+    footer?.classList.remove('hidden');
 
-    summaryCount.textContent = `${totalItems} ta`;
-    summaryTotal.textContent = new Intl.NumberFormat('fr-FR').format(totalPrice) + " so'm";
+    let totalSum = 0;
+    let totalQty = 0;
 
-    listContainer.innerHTML = state.cart.map(item => `
-        <div class="cart-item-card">
-            <img src="${item.image}" alt="${item.name}" class="cart-item-img">
-            <div class="cart-item-info">
-                <h4 class="cart-item-title">${item.name}</h4>
-                <div class="cart-item-price">${formatPrice(item.price, item.priceType)}</div>
-                <div class="cart-item-actions">
-                    <div class="cart-item-qty">
-                        <button class="cart-qty-btn" onclick="updateCartQuantity(${item.id}, -1)">
-                            <i data-lucide="minus"></i>
-                        </button>
-                        <span class="cart-qty-val">${item.quantity}</span>
-                        <button class="cart-qty-btn" onclick="updateCartQuantity(${item.id}, 1)">
-                            <i data-lucide="plus"></i>
+    list.innerHTML = state.cart.map(item => {
+        const sum = item.price * item.quantity;
+        totalSum += sum;
+        totalQty += item.quantity;
+
+        return `
+            <div class="cart-item-card">
+                <img src="${item.image || 'https://via.placeholder.com/150'}" class="cart-item-img" alt="${item.title}">
+                <div class="cart-item-info">
+                    <h5 class="cart-item-title">${item.title}</h5>
+                    <div class="cart-item-price price-tag">${formatPrice(item.price)}</div>
+                    <div class="cart-item-actions">
+                        <div class="cart-item-qty">
+                            <button class="cart-qty-btn" data-qty-id="${item.id}" data-delta="-1" aria-label="Kamaytirish">-</button>
+                            <span class="cart-qty-val">${item.quantity}</span>
+                            <button class="cart-qty-btn" data-qty-id="${item.id}" data-delta="1" aria-label="Oshirish">+</button>
+                        </div>
+                        <button class="cart-remove-btn" data-remove-id="${item.id}" aria-label="O'chirish">
+                            <i data-lucide="trash-2"></i>
                         </button>
                     </div>
-                    <button class="cart-remove-btn" onclick="removeFromCart(${item.id})" aria-label="O'chirish">
-                        <i data-lucide="trash-2"></i>
-                    </button>
                 </div>
             </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 
-    if (window.lucide) {
-        window.lucide.createIcons();
+    if (window.lucide) window.lucide.createIcons();
+
+    list.querySelectorAll('[data-qty-id]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            updateCartQty(parseInt(btn.getAttribute('data-qty-id')), parseInt(btn.getAttribute('data-delta')));
+        });
+    });
+    list.querySelectorAll('[data-remove-id]').forEach(btn => {
+        btn.addEventListener('click', () => removeCartItem(parseInt(btn.getAttribute('data-remove-id'))));
+    });
+
+    if (subtitle) subtitle.textContent = `${totalQty} ta mahsulot`;
+    document.getElementById('cartSummaryCount').textContent = `${totalQty} ta`;
+    document.getElementById('cartSummaryTotal').textContent = formatPrice(totalSum);
+}
+
+function updateCartQty(id, delta) {
+    const item = state.cart.find(i => i.id === id);
+    if (!item) return;
+
+    item.quantity += delta;
+    if (item.quantity <= 0) {
+        removeCartItem(id);
+    } else {
+        saveState();
+        updateBadges();
+        renderCartItems();
     }
 }
 
+function removeCartItem(id) {
+    state.cart = state.cart.filter(i => i.id !== id);
+    saveState();
+    updateBadges();
+    renderCartItems();
+}
+
+// BUG FIX: there used to be no code at all rendering the favorites sheet —
+// tapping the heart icon in the header always opened an empty modal, even
+// after favoriting products, because #favItemsList was never populated and
+// #emptyFavView stayed hidden by default.
 function renderFavorites() {
-    const favList = document.getElementById('favItemsList');
-    const emptyFavView = document.getElementById('emptyFavView');
-    const favSubtitle = document.getElementById('favSubtitle');
+    const list = document.getElementById('favItemsList');
+    const emptyView = document.getElementById('emptyFavView');
+    const subtitle = document.getElementById('favSubtitle');
+    if (!list) return;
 
-    if (!favList) return;
+    // Some favorited ids may point at products that no longer exist
+    // (e.g. removed from the catalog) — filter those out defensively.
+    const favProducts = state.favorites
+        .map(id => state.products.find(p => p.id === id))
+        .filter(Boolean);
 
-    const favProducts = PRODUCTS.filter(p => state.favorites.includes(p.id));
-    favSubtitle.textContent = `${favProducts.length} ta saqlangan`;
+    if (subtitle) subtitle.textContent = `${favProducts.length} ta saqlangan`;
 
     if (favProducts.length === 0) {
-        favList.innerHTML = '';
-        emptyFavView.classList.remove('hidden');
+        list.innerHTML = '';
+        emptyView?.classList.remove('hidden');
         return;
     }
+    emptyView?.classList.add('hidden');
 
-    emptyFavView.classList.add('hidden');
-
-    favList.innerHTML = favProducts.map(p => `
-        <div class="cart-item-card" onclick="openProductDetailModal(${p.id})">
-            <img src="${p.images[0]}" alt="${p.name}" class="cart-item-img">
-            <div class="cart-item-info">
-                <h4 class="cart-item-title">${p.name}</h4>
-                <div class="cart-item-price">${formatPrice(p.price, p.priceType)}</div>
-                <div style="font-size:0.75rem; color: var(--tg-theme-hint-color);">${p.categoryLabel}</div>
+    list.innerHTML = favProducts.map(p => {
+        const imageSrc = (p.images && p.images[0]) ? p.images[0] : (p.media_file_id || 'https://via.placeholder.com/150');
+        return `
+            <div class="fav-item-card" data-open-id="${p.id}">
+                <img src="${imageSrc}" class="cart-item-img" alt="${p.name}">
+                <div class="cart-item-info">
+                    <h5 class="cart-item-title">${p.name}</h5>
+                    <div class="cart-item-price price-tag">${formatPrice(p.price)}</div>
+                    <div class="fav-item-actions">
+                        <button class="btn-card-add" data-fav-add-id="${p.id}" style="flex:1">
+                            <i data-lucide="shopping-bag"></i><span>Savatga</span>
+                        </button>
+                        <button class="fav-remove-btn" data-fav-remove-id="${p.id}" aria-label="Saralanganlardan olib tashlash">
+                            <i data-lucide="heart-off"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
-            <button class="cart-remove-btn" onclick="event.stopPropagation(); toggleFavorite(${p.id});" aria-label="O'chirish">
-                <i data-lucide="heart" fill="currentColor"></i>
-            </button>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 
-    if (window.lucide) {
-        window.lucide.createIcons();
-    }
+    if (window.lucide) window.lucide.createIcons();
+
+    list.querySelectorAll('[data-open-id]').forEach(card => {
+        card.addEventListener('click', (e) => {
+            if (e.target.closest('button')) return;
+            openProductDetailModal(parseInt(card.getAttribute('data-open-id')));
+        });
+    });
+    list.querySelectorAll('[data-fav-add-id]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            addToCart(parseInt(btn.getAttribute('data-fav-add-id')), 1, btn);
+        });
+    });
+    list.querySelectorAll('[data-fav-remove-id]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleFavorite(parseInt(btn.getAttribute('data-fav-remove-id')));
+        });
+    });
 }
 
-// Make functions global for inline onclick and external calls
-window.addToCart = addToCart;
-window.updateCartQuantity = updateCartQuantity;
-window.removeFromCart = removeFromCart;
-window.toggleFavorite = toggleFavorite;
-window.openProductDetailModal = openProductDetailModal;
-window.submitOrder = submitOrder;
+function openFavoritesSheet() {
+    renderFavorites();
+    openModal('favoritesModalOverlay');
+}
 
 // ==========================================
-// 6. PRODUCT DETAIL MODAL & CAROUSEL
+// 6. PRODUCT DETAIL MODAL
 // ==========================================
 function openProductDetailModal(productId) {
-    const product = PRODUCTS.find(p => p.id === productId);
+    const product = state.products.find(p => p.id === productId);
     if (!product) return;
 
     state.selectedProduct = product;
     state.selectedQuantity = 1;
     state.galleryIndex = 0;
 
-    // Fill Modal elements
-    document.getElementById('modalTitle').textContent = product.name;
-    document.getElementById('modalBadge').textContent = product.isCustom ? 'ZAKAZGA' : 'TAYYOR';
-    document.getElementById('modalBadge').className = `badge-tag ${product.isCustom ? 'card-badge custom-badge' : 'card-badge ready-badge'}`;
-    document.getElementById('modalCategory').textContent = product.categoryLabel;
-    document.getElementById('modalPrice').textContent = formatPrice(product.price, product.priceType);
-    document.getElementById('modalDimensions').textContent = product.dimensions;
-    document.getElementById('modalMaterial').textContent = product.material;
-    document.getElementById('modalMechanism').textContent = product.mechanism;
-    document.getElementById('modalWarranty').textContent = product.warranty;
-    document.getElementById('modalProduction').textContent = product.productionTime;
-    document.getElementById('modalDescription').textContent = product.description;
+    document.getElementById('modalTitle').textContent = product.name || product.title;
+    document.getElementById('modalPrice').textContent = formatPrice(product.price);
+    document.getElementById('modalDimensions').textContent = product.dimensions || 'Standart';
+    document.getElementById('modalMaterial').textContent = product.material || 'MDF';
+    document.getElementById('modalMechanism').textContent = product.mechanism || 'Standart';
+    document.getElementById('modalWarranty').textContent = product.warranty || '12 oy';
+    document.getElementById('modalProduction').textContent = product.productionTime || '3-5 kun';
+    document.getElementById('modalDescription').textContent = product.description || 'Tavsif berilmagan.';
     document.getElementById('modalQtyVal').textContent = '1';
 
-    // Favorite button status
-    const modalFavBtn = document.getElementById('modalFavBtn');
-    const isFav = state.favorites.includes(product.id);
-    modalFavBtn.classList.toggle('active', isFav);
+    // BUG FIX: #modalBadge and #modalCategory were declared in the HTML
+    // with hardcoded placeholder text ("TAYYOR" / "Yotoqxona") and were
+    // never updated by JS, so every product's detail sheet showed the same
+    // badge and category regardless of what was actually selected.
+    const badgeEl = document.getElementById('modalBadge');
+    if (badgeEl) {
+        badgeEl.textContent = product.isCustom ? 'ZAKAZGA' : 'TAYYOR';
+        badgeEl.classList.toggle('is-custom', !!product.isCustom);
+    }
+    const categoryEl = document.getElementById('modalCategory');
+    if (categoryEl) categoryEl.textContent = product.categoryLabel || '';
 
-    // Gallery Render
     renderGallery(product);
+    syncModalFavButton();
 
     openModal('productModalOverlay');
 }
 
+// BUG FIX: the gallery only ever rendered the first image, and the
+// indicator dots (#galleryIndicators) and the floating favorite button
+// (#modalFavBtn) inside the product sheet were never wired up at all.
 function renderGallery(product) {
     const track = document.getElementById('galleryTrack');
     const indicators = document.getElementById('galleryIndicators');
-
     if (!track) return;
 
-    const items = [];
-    if (product.video) {
-        items.push({ type: 'video', url: product.video });
-    }
-    product.images.forEach(img => {
-        items.push({ type: 'image', url: img });
-    });
+    const images = (product.images && product.images.length > 0)
+        ? product.images
+        : [product.media_file_id || 'https://via.placeholder.com/600'];
 
-    track.innerHTML = items.map(item => {
-        if (item.type === 'video') {
-            return `
-                <div class="gallery-item">
-                    <video src="${item.url}" autoplay muted loop playsinline controls></video>
-                </div>
-            `;
-        }
-        return `
-            <div class="gallery-item">
-                <img src="${item.url}" alt="${product.name}">
-            </div>
-        `;
-    }).join('');
-
-    indicators.innerHTML = items.map((_, idx) => `
-        <span class="indicator-dot ${idx === 0 ? 'active' : ''}" data-idx="${idx}"></span>
+    track.innerHTML = images.map(src => `
+        <div class="gallery-item"><img src="${src}" alt="${product.name || 'Mahsulot'}" loading="lazy"></div>
     `).join('');
 
-    track.style.transform = 'translateX(0%)';
+    if (indicators) {
+        indicators.innerHTML = images.length > 1
+            ? images.map((_, i) => `<span class="gallery-dot ${i === 0 ? 'active' : ''}" data-dot="${i}"></span>`).join('')
+            : '';
+    }
 
-    // Indicators click
-    indicators.querySelectorAll('.indicator-dot').forEach(dot => {
-        dot.addEventListener('click', () => {
-            const idx = parseInt(dot.getAttribute('data-idx'));
-            setGalleryIndex(idx, items.length);
-        });
+    if (images.length > 1) {
+        track.onscroll = () => {
+            const idx = Math.round(track.scrollLeft / track.clientWidth);
+            indicators?.querySelectorAll('.gallery-dot').forEach((dot, i) => {
+                dot.classList.toggle('active', i === idx);
+            });
+        };
+    } else {
+        track.onscroll = null;
+    }
+}
+
+function syncModalFavButton() {
+    const btn = document.getElementById('modalFavBtn');
+    if (!btn || !state.selectedProduct) return;
+    const isFav = state.favorites.includes(state.selectedProduct.id);
+    btn.classList.toggle('active', isFav);
+    const icon = btn.querySelector('i');
+    if (icon) {
+        if (isFav) icon.setAttribute('fill', 'currentColor');
+        else icon.removeAttribute('fill');
+    }
+}
+
+// ==========================================
+// 7. FILTER SHEET LOGIC
+// ==========================================
+// BUG FIX: none of the filter/sort chips (#sortOptions, #filterCategories,
+// #filterAvailability, #filterMaterials) had any click listeners, and
+// #filterCategories was never populated at all, so the entire filter sheet
+// was inert — every chip in the markup was purely decorative.
+function renderFilterCategories() {
+    const wrap = document.getElementById('filterCategories');
+    if (!wrap) return;
+    wrap.innerHTML = CATEGORIES.map(cat => `
+        <button class="filter-chip ${state.activeCategory === cat.id ? 'active' : ''}" data-category="${cat.id}">${cat.name}</button>
+    `).join('');
+}
+
+function setupFilterChipGroup(containerId, onSelect) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    container.addEventListener('click', (e) => {
+        const chip = e.target.closest('.filter-chip');
+        if (!chip || !container.contains(chip)) return;
+        container.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        onSelect(chip);
+        triggerHaptic('light');
     });
 }
 
-function setGalleryIndex(idx, total) {
-    state.galleryIndex = idx;
-    const track = document.getElementById('galleryTrack');
-    const indicators = document.getElementById('galleryIndicators');
+function syncFilterSheetUI() {
+    renderFilterCategories();
 
-    if (track) {
-        track.style.transform = `translateX(-${idx * 100}%)`;
-    }
+    document.querySelectorAll('#sortOptions .filter-chip').forEach(chip => {
+        chip.classList.toggle('active', chip.dataset.sort === state.filters.sort);
+    });
+    document.querySelectorAll('#filterAvailability .filter-chip').forEach(chip => {
+        chip.classList.toggle('active', chip.dataset.availability === state.filters.availability);
+    });
+    document.querySelectorAll('#filterMaterials .filter-chip').forEach(chip => {
+        chip.classList.toggle('active', chip.dataset.material === state.filters.material);
+    });
+}
 
-    if (indicators) {
-        indicators.querySelectorAll('.indicator-dot').forEach((dot, i) => {
-            dot.classList.toggle('active', i === idx);
-        });
+function updateActiveFiltersBar() {
+    const bar = document.getElementById('activeFiltersBar');
+    const label = document.getElementById('filterStatusText');
+    const filterBtn = document.getElementById('openFilterBtn');
+    if (!bar) return;
+
+    const activeParts = [];
+    if (state.filters.availability !== 'all') activeParts.push(state.filters.availability === 'ready' ? 'Tayyor' : 'Zakazga');
+    if (state.filters.material !== 'all') activeParts.push(state.filters.material);
+    if (state.filters.sort !== 'recommended') activeParts.push('Saralangan');
+
+    const hasActive = activeParts.length > 0;
+    bar.classList.toggle('hidden', !hasActive);
+    filterBtn?.classList.toggle('has-active', hasActive);
+    if (label && hasActive) label.textContent = `Filtr: ${activeParts.join(' · ')}`;
+}
+
+function resetAllFilters(keepCategory = false) {
+    state.filters.availability = 'all';
+    state.filters.material = 'all';
+    state.filters.sort = 'recommended';
+    if (!keepCategory) {
+        state.activeCategory = 'all';
+        state.filters.category = 'all';
     }
 }
 
 // ==========================================
-// 7. CHECKOUT & ORDER SUBMISSION
+// 8. CHECKOUT LOGIC
 // ==========================================
-function submitOrder() {
-    if (state.cart.length === 0) return;
+function openCheckoutSheet() {
+    if (state.cart.length === 0) {
+        toast("Savatingiz bo'sh. Avval mahsulot tanlang.", 'error');
+        return;
+    }
+    closeModal('cartModalOverlay');
+    openModal('checkoutModalOverlay');
+    checkFormValidity();
+}
 
-    const { totalItems, totalPrice } = calculateCartTotals();
+function handleLocation() {
+    const btn = document.getElementById('getLocationBtn');
+    const btnText = document.getElementById('locationBtnText');
 
-    // Prepare Checkout JSON
-    const orderData = {
-        user: {
-            telegram_id: tg?.initDataUnsafe?.user?.id || "guest_browser_1024",
-            first_name: tg?.initDataUnsafe?.user?.first_name || "Mijoz",
-            username: tg?.initDataUnsafe?.user?.username || null
+    if (!navigator.geolocation) {
+        toast("Brauzeringizda Geolocation qo'llab-quvvatlanmaydi.", 'error');
+        return;
+    }
+
+    if (btnText) btnText.textContent = 'Aniqlanmoqda...';
+    if (btn) btn.disabled = true;
+
+    navigator.geolocation.getCurrentPosition(
+        (pos) => {
+            state.location = {
+                lat: pos.coords.latitude,
+                lng: pos.coords.longitude
+            };
+            document.getElementById('custLat').value = pos.coords.latitude;
+            document.getElementById('custLng').value = pos.coords.longitude;
+            document.getElementById('locationStatus')?.classList.remove('hidden');
+            if (btnText) btnText.textContent = 'Lokatsiya yangilash';
+            if (btn) btn.disabled = false;
+            triggerHaptic('success');
+            checkFormValidity();
         },
-        items: state.cart.map(i => ({
-            id: i.id,
-            name: i.name,
-            quantity: i.quantity,
-            price: i.price,
-            priceType: i.priceType
-        })),
-        total_items: totalItems,
-        total_price: totalPrice,
-        created_at: new Date().toISOString()
+        (err) => {
+            if (btnText) btnText.textContent = 'Joriy lokatsiyani aniqlash';
+            if (btn) btn.disabled = false;
+            toast("Lokatsiyani aniqlashda xatolik ro'y berdi. Ruxsat berilganini tekshiring.", 'error');
+        }
+    );
+}
+
+// BUG FIX: confirmOrderBtn was only ever enabled/disabled based on the
+// name+phone inputs (checkFormValidity), completely ignoring whether a
+// location had actually been captured. Because getLocationBtn separately
+// force-set `disabled = false` on success, and checkFormValidity ran again
+// on every keystroke and would happily re-enable the button from
+// name/phone alone, a customer could submit an order with no delivery
+// location at all despite the field being marked required (*) in the UI.
+function checkFormValidity() {
+    const name = document.getElementById('custName').value.trim();
+    const phone = document.getElementById('custPhone').value.trim();
+    const confirmBtn = document.getElementById('confirmOrderBtn');
+    if (confirmBtn) {
+        confirmBtn.disabled = !(name.length > 2 && phone.length > 7 && !!state.location);
+    }
+}
+
+function submitOrder() {
+    const name = document.getElementById('custName').value.trim();
+    const phone = document.getElementById('custPhone').value.trim();
+
+    if (!name || name.length <= 2) {
+        toast("Iltimos, to'liq ismingizni kiriting.", 'error');
+        return;
+    }
+    if (!phone || phone.length <= 7) {
+        toast("Iltimos, telefon raqamingizni to'liq kiriting.", 'error');
+        return;
+    }
+    if (!state.location) {
+        toast("Iltimos, yetkazib berish uchun lokatsiyani aniqlang.", 'error');
+        return;
+    }
+    if (state.cart.length === 0) {
+        toast("Savatingiz bo'sh.", 'error');
+        return;
+    }
+
+    const totalSum = state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const totalQty = state.cart.reduce((sum, item) => sum + item.quantity, 0);
+
+    const payload = {
+        customer: {
+            name: name,
+            phone: phone,
+            address: "Telegram Orqali Lokatsiya",
+            location: state.location
+        },
+        items: state.cart,
+        summary: {
+            total_price: totalSum
+        }
     };
 
-    console.log("SHOD MEBEL CHECKOUT JSON:", orderData);
+    const confirmBtn = document.getElementById('confirmOrderBtn');
+    if (confirmBtn) confirmBtn.disabled = true;
 
-    // Send data to Telegram WebApp if available
-    if (tg?.sendData) {
+    showOrderSuccess(totalSum, totalQty);
+
+    if (tg && tg.sendData) {
+        // NOTE: tg.sendData() closes the Mini App immediately (Telegram
+        // platform behavior) and the bot sends its own confirmation message
+        // in the chat — the success sheet above is a brief, friendly beat
+        // before that handoff.
         try {
-            tg.sendData(JSON.stringify(orderData));
+            tg.sendData(JSON.stringify(payload));
         } catch (e) {
-            console.warn("Could not send data via WebApp sendData:", e);
+            console.warn('tg.sendData xatosi:', e);
         }
+    } else {
+        toast("Buyurtmangiz qabul qilindi! (Demo rejim — botga ulanmagan)", 'success', 3200);
     }
 
-    triggerHaptic('success');
-
-    // Display Success Modal
-    document.getElementById('orderNumberRef').textContent = `#SM-${Math.floor(1000 + Math.random() * 9000)}`;
-    document.getElementById('orderSuccessTotal').textContent = new Intl.NumberFormat('fr-FR').format(totalPrice) + " so'm";
-    document.getElementById('orderSuccessCount').textContent = `${totalItems} ta`;
-
-    closeModal('cartModalOverlay');
-    openModal('successModalOverlay');
-
-    // Clear Cart
     state.cart = [];
+    state.location = null;
     saveState();
     updateBadges();
-    renderCart();
+}
+
+function showOrderSuccess(totalSum, totalQty) {
+    const orderNumber = `#SM-${Math.floor(1000 + Math.random() * 9000)}`;
+    document.getElementById('orderNumberRef').textContent = orderNumber;
+    document.getElementById('orderSuccessTotal').textContent = formatPrice(totalSum);
+    document.getElementById('orderSuccessCount').textContent = `${totalQty} ta`;
+    closeModal('checkoutModalOverlay');
+    openModal('successModalOverlay');
 }
 
 // ==========================================
-// 8. MODAL CONTROLLERS
+// 9. ADMIN — ADD PRODUCT (local/session only)
 // ==========================================
-function openModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (modal) {
-        modal.classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-        triggerHaptic('light');
-        updateTelegramBackButton();
-    }
-}
+// NOTE: this storefront is a static site (no server of its own), so it has
+// no way to persist a new product beyond this browser session. The
+// Telegram bot's own "➕ Yangi tovar qo'shish" flow is the real, persisted
+// way to add catalog products (saved to the bot's database). This form is
+// left functional for quick local/demo previews, but is explicit about
+// that limitation so nobody mistakes it for a real save.
+function setupAdminProductForm() {
+    const form = document.getElementById('adminAddProductForm');
+    if (!form) return;
 
-function closeModal(modalId) {
-    const modal = document.getElementById(modalId);
-    if (modal) {
-        modal.classList.add('hidden');
-        document.body.style.overflow = '';
-        triggerHaptic('light');
-        updateTelegramBackButton();
-    }
-}
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
 
-// ==========================================
-// 9. EVENT LISTENERS & INITIALIZATION
-// ==========================================
-function setupEventListeners() {
-    // Header Buttons
-    document.getElementById('searchToggleBtn').addEventListener('click', () => {
-        const searchBar = document.getElementById('searchBarContainer');
-        searchBar.classList.toggle('hidden');
-        if (!searchBar.classList.contains('hidden')) {
-            document.getElementById('searchInput').focus();
+        const title = document.getElementById('newProdTitle').value.trim();
+        const categoryInput = document.getElementById('newProdCategory').value.trim();
+        const priceRaw = document.getElementById('newProdPrice').value.trim();
+        const desc = document.getElementById('newProdDesc').value.trim();
+        const mediaUrl = document.getElementById('newProdMediaUrl').value.trim();
+        const isCustom = document.getElementById('newProdIsCustom').checked;
+
+        if (!title || !categoryInput || !priceRaw || !mediaUrl) {
+            toast("Iltimos, barcha majburiy maydonlarni to'ldiring.", 'error');
+            return;
         }
-        updateTelegramBackButton();
+
+        const price = parseFloat(priceRaw.replace(/[^\d.]/g, ''));
+        if (!price || price <= 0) {
+            toast("Narxni to'g'ri kiriting (masalan: 2 500 000).", 'error');
+            return;
+        }
+
+        const categoryId = slugify(categoryInput);
+        if (!CATEGORIES.some(c => c.id === categoryId)) {
+            CATEGORIES.push({ id: categoryId, name: categoryInput });
+        }
+
+        const newId = state.products.length > 0
+            ? Math.max(...state.products.map(p => p.id)) + 1
+            : 1;
+
+        state.products.push({
+            id: newId,
+            name: title,
+            category: categoryId,
+            categoryLabel: categoryInput,
+            price: price,
+            priceType: 'fixed',
+            isCustom: isCustom,
+            material: 'Ko\'rsatilmagan',
+            dimensions: 'Ko\'rsatilmagan',
+            mechanism: 'Standart',
+            warranty: '12 oy',
+            productionTime: '—',
+            description: desc || "Tavsif berilmagan.",
+            images: [mediaUrl],
+            video: null,
+            isNew: true
+        });
+
+        form.reset();
+        closeModal('adminProductModalOverlay');
+        renderCategories();
+        renderProducts();
+        toast("Mahsulot qo'shildi (faqat shu qurilma/sessiya uchun).", 'success', 3200);
+    });
+}
+
+// ==========================================
+// 10. GENERIC MODAL WIRING (close buttons, overlay click, etc.)
+// ==========================================
+// BUG FIX: the admin modal's "&times;" button had a `data-close-modal`
+// attribute in the HTML, but nothing in JS ever read that attribute —
+// clicking it did nothing. Same generic behavior is used for tap-outside-
+// to-close on every sheet/modal overlay, which also wasn't implemented.
+function setupGenericModalClosers() {
+    document.querySelectorAll('[data-close-modal]').forEach(btn => {
+        btn.addEventListener('click', () => closeModal(btn.getAttribute('data-close-modal')));
     });
 
-    document.getElementById('favoritesToggleBtn').addEventListener('click', () => {
-        renderFavorites();
-        openModal('favoritesModalOverlay');
+    document.querySelectorAll('.sheet-overlay, .modal-overlay').forEach(overlay => {
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) closeModal(overlay.id);
+        });
     });
+}
 
-    document.getElementById('cartToggleBtn').addEventListener('click', () => {
-        renderCart();
-        openModal('cartModalOverlay');
-    });
+// ==========================================
+// 11. EVENT LISTENERS
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    initTelegramWebApp();
+    renderCategories();
+    renderProducts();
+    updateBadges();
+    setupGenericModalClosers();
+    setupAdminProductForm();
 
-    // Search Input listeners
+    // Show the admin-only header button if this Telegram user is the admin.
+    const adminBtn = document.getElementById('adminAddProductBtn');
+    if (adminBtn) {
+        adminBtn.classList.toggle('hidden', !isAdmin);
+        adminBtn.addEventListener('click', () => openModal('adminProductModalOverlay'));
+    }
+
+    // ---- Search ----
     const searchInput = document.getElementById('searchInput');
     const searchClearBtn = document.getElementById('searchClearBtn');
 
-    searchInput.addEventListener('input', (e) => {
+    document.getElementById('searchToggleBtn')?.addEventListener('click', () => {
+        const bar = document.getElementById('searchBarContainer');
+        bar?.classList.toggle('hidden');
+        if (bar && !bar.classList.contains('hidden')) searchInput?.focus();
+    });
+
+    searchInput?.addEventListener('input', (e) => {
         state.searchQuery = e.target.value;
-        if (state.searchQuery.length > 0) {
-            searchClearBtn.classList.remove('hidden');
-        } else {
-            searchClearBtn.classList.add('hidden');
-        }
+        searchClearBtn?.classList.toggle('hidden', state.searchQuery.length === 0);
         renderProducts();
     });
 
-    searchClearBtn.addEventListener('click', () => {
-        searchInput.value = '';
+    searchClearBtn?.addEventListener('click', () => {
         state.searchQuery = '';
+        if (searchInput) searchInput.value = '';
         searchClearBtn.classList.add('hidden');
         renderProducts();
+        searchInput?.focus();
     });
 
-    // Filter Buttons
-    document.getElementById('openFilterBtn').addEventListener('click', () => {
+    // ---- Hero CTA ----
+    document.getElementById('heroCtaBtn')?.addEventListener('click', () => {
+        document.getElementById('categoryNav')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    // ---- Cart Modal ----
+    document.getElementById('cartToggleBtn')?.addEventListener('click', openCartSheet);
+    document.getElementById('closeCartSheetBtn')?.addEventListener('click', () => closeModal('cartModalOverlay'));
+    document.getElementById('browseFromCartBtn')?.addEventListener('click', () => {
+        closeModal('cartModalOverlay');
+        document.getElementById('productGrid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    // ---- Favorites Sheet ----
+    document.getElementById('favoritesToggleBtn')?.addEventListener('click', openFavoritesSheet);
+    document.getElementById('closeFavSheetBtn')?.addEventListener('click', () => closeModal('favoritesModalOverlay'));
+
+    // ---- Filter Sheet ----
+    document.getElementById('openFilterBtn')?.addEventListener('click', () => {
+        syncFilterSheetUI();
         openModal('filterModalOverlay');
     });
+    document.getElementById('closeFilterSheetBtn')?.addEventListener('click', () => closeModal('filterModalOverlay'));
 
-    document.getElementById('closeFilterSheetBtn').addEventListener('click', () => {
+    setupFilterChipGroup('sortOptions', (chip) => { state.filters.sort = chip.dataset.sort; });
+    setupFilterChipGroup('filterCategories', (chip) => {
+        state.activeCategory = chip.dataset.category;
+        state.filters.category = chip.dataset.category;
+    });
+    setupFilterChipGroup('filterAvailability', (chip) => { state.filters.availability = chip.dataset.availability; });
+    setupFilterChipGroup('filterMaterials', (chip) => { state.filters.material = chip.dataset.material; });
+
+    document.getElementById('applyFilterModalBtn')?.addEventListener('click', () => {
         closeModal('filterModalOverlay');
-    });
-
-    // Filter Modal Options Click Handlers
-    document.getElementById('sortOptions').querySelectorAll('.filter-chip').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.getElementById('sortOptions').querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            state.filters.sort = btn.getAttribute('data-sort');
-        });
-    });
-
-    document.getElementById('filterAvailability').querySelectorAll('.filter-chip').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.getElementById('filterAvailability').querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            state.filters.availability = btn.getAttribute('data-availability');
-        });
-    });
-
-    document.getElementById('filterMaterials').querySelectorAll('.filter-chip').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.getElementById('filterMaterials').querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            state.filters.material = btn.getAttribute('data-material');
-        });
-    });
-
-    document.getElementById('applyFilterModalBtn').addEventListener('click', () => {
-        closeModal('filterModalOverlay');
+        renderCategories();
         renderProducts();
+        updateActiveFiltersBar();
     });
 
-    document.getElementById('resetFilterModalBtn').addEventListener('click', () => {
-        state.filters = { category: state.activeCategory, availability: 'all', material: 'all', sort: 'recommended' };
-        closeModal('filterModalOverlay');
+    document.getElementById('resetFilterModalBtn')?.addEventListener('click', () => {
+        resetAllFilters();
+        syncFilterSheetUI();
+        renderCategories();
         renderProducts();
+        updateActiveFiltersBar();
     });
 
     document.getElementById('resetFiltersBtn')?.addEventListener('click', () => {
-        state.filters = { category: 'all', availability: 'all', material: 'all', sort: 'recommended' };
-        state.activeCategory = 'all';
+        resetAllFilters(true);
+        renderProducts();
+        updateActiveFiltersBar();
+    });
+
+    // ---- Empty / Error states ----
+    document.getElementById('emptyStateResetBtn')?.addEventListener('click', () => {
+        state.searchQuery = '';
+        if (searchInput) searchInput.value = '';
+        searchClearBtn?.classList.add('hidden');
+        resetAllFilters();
         renderCategories();
+        renderProducts();
+        updateActiveFiltersBar();
+    });
+
+    document.getElementById('retryBtn')?.addEventListener('click', () => {
+        document.getElementById('errorState')?.classList.add('hidden');
         renderProducts();
     });
 
-    // Modal Close Buttons
-    document.getElementById('closeProductSheetBtn').addEventListener('click', () => closeModal('productModalOverlay'));
-    document.getElementById('closeCartSheetBtn').addEventListener('click', () => closeModal('cartModalOverlay'));
-    document.getElementById('closeFavSheetBtn').addEventListener('click', () => closeModal('favoritesModalOverlay'));
+    // ---- Product Detail Modal ----
+    document.getElementById('closeProductSheetBtn')?.addEventListener('click', () => closeModal('productModalOverlay'));
 
-    // Modal Overlay Tap Outside
-    document.querySelectorAll('.sheet-overlay').forEach(overlay => {
-        overlay.addEventListener('click', (e) => {
-            if (e.target === overlay) {
-                closeModal(overlay.id);
-            }
-        });
+    document.getElementById('modalFavBtn')?.addEventListener('click', () => {
+        if (state.selectedProduct) toggleFavorite(state.selectedProduct.id);
     });
 
-    // Product Detail Quantity
-    document.getElementById('modalQtyMinus').addEventListener('click', () => {
+    document.getElementById('modalQtyMinus')?.addEventListener('click', () => {
         if (state.selectedQuantity > 1) {
             state.selectedQuantity--;
             document.getElementById('modalQtyVal').textContent = state.selectedQuantity;
         }
     });
 
-    document.getElementById('modalQtyPlus').addEventListener('click', () => {
+    document.getElementById('modalQtyPlus')?.addEventListener('click', () => {
         state.selectedQuantity++;
         document.getElementById('modalQtyVal').textContent = state.selectedQuantity;
     });
 
-    document.getElementById('modalAddToCartBtn').addEventListener('click', () => {
+    document.getElementById('modalAddToCartBtn')?.addEventListener('click', () => {
         if (state.selectedProduct) {
-            addToCart(state.selectedProduct.id, state.selectedQuantity, document.getElementById('modalAddToCartBtn'));
-            setTimeout(() => {
-                closeModal('productModalOverlay');
-            }, 600);
+            addToCart(state.selectedProduct.id, state.selectedQuantity);
+            closeModal('productModalOverlay');
         }
     });
 
-    document.getElementById('modalFavBtn').addEventListener('click', () => {
-        if (state.selectedProduct) {
-            toggleFavorite(state.selectedProduct.id);
-        }
-    });
+    // ---- Checkout Modal ----
+    document.getElementById('closeCheckoutSheetBtn')?.addEventListener('click', () => closeModal('checkoutModalOverlay'));
+    document.getElementById('getLocationBtn')?.addEventListener('click', handleLocation);
+    document.getElementById('cartCheckoutBtn')?.addEventListener('click', openCheckoutSheet);
+    document.getElementById('confirmOrderBtn')?.addEventListener('click', submitOrder);
 
-    // Cart Checkout & Browse
-    document.getElementById('cartCheckoutBtn').addEventListener('click', submitOrder);
-    document.getElementById('browseFromCartBtn').addEventListener('click', () => closeModal('cartModalOverlay'));
-    document.getElementById('heroCtaBtn').addEventListener('click', () => {
-        window.scrollTo({ top: 300, behavior: 'smooth' });
-    });
+    document.getElementById('custName')?.addEventListener('input', checkFormValidity);
+    document.getElementById('custPhone')?.addEventListener('input', checkFormValidity);
 
-    document.getElementById('successContinueBtn').addEventListener('click', () => {
+    // ---- Success Modal ----
+    document.getElementById('successContinueBtn')?.addEventListener('click', () => {
         closeModal('successModalOverlay');
+        renderCartItems();
     });
-
-    document.getElementById('emptyStateResetBtn').addEventListener('click', () => {
-        state.activeCategory = 'all';
-        state.searchQuery = '';
-        state.filters = { category: 'all', availability: 'all', material: 'all', sort: 'recommended' };
-        document.getElementById('searchInput').value = '';
-        renderCategories();
-        renderProducts();
-    });
-}
-
-// ==========================================
-// 10. INITIALIZATION
-// ==========================================
-function initApp() {
-    initTelegramWebApp();
-    renderCategories();
-    renderProducts();
-    renderCart();
-    updateBadges();
-    setupEventListeners();
-
-    if (window.lucide) {
-        window.lucide.createIcons();
-    }
-}
-
-document.addEventListener('DOMContentLoaded', initApp);
+});
