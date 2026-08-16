@@ -8,55 +8,91 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         :root {
-            --bg-color: #121212;
-            --card-bg: #1e1e1e;
-            --text-color: #ffffff;
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
             --accent-color: #10b981;
             --danger-color: #ef4444;
-            --border-color: #2e2e2e;
+            --text-color: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
         }
+
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-color); padding-bottom: 80px; }
-        
-        header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: var(--card-bg); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100; }
-        .logo { font-weight: bold; font-size: 18px; color: var(--accent-color); }
+        body { background-color: var(--bg-color); color: var(--text-color); padding-bottom: 20px; }
+
+        header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 14px 18px; background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100;
+        }
+        .logo { font-size: 18px; font-weight: 700; color: var(--accent-color); letter-spacing: 0.5px; }
         .header-actions { display: flex; gap: 10px; align-items: center; }
-        .icon-btn { background: transparent; border: none; color: var(--text-color); cursor: pointer; display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 50%; }
+        
+        .icon-btn {
+            background: #273549; border: none; color: var(--text-color);
+            width: 38px; height: 38px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
+        }
         .hidden { display: none !important; }
 
-        .categories { display: flex; gap: 8px; overflow-x: auto; padding: 12px 16px; scrollbar-width: none; }
-        .cat-btn { background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color); padding: 6px 14px; border-radius: 20px; white-space: nowrap; cursor: pointer; }
+        .categories { display: flex; gap: 8px; overflow-x: auto; padding: 14px 16px; scrollbar-width: none; }
+        .cat-btn {
+            background: var(--card-bg); border: 1px solid var(--border-color);
+            color: var(--text-muted); padding: 8px 16px; border-radius: 20px;
+            white-space: nowrap; font-size: 13px; font-weight: 500; cursor: pointer;
+        }
         .cat-btn.active { background: var(--accent-color); color: white; border-color: var(--accent-color); }
 
-        .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 16px; }
-        .product-card { background: var(--card-bg); border-radius: 12px; overflow: hidden; border: 1px solid var(--border-color); position: relative; }
-        .product-card img { width: 100%; height: 140px; object-fit: cover; }
-        .product-info { padding: 10px; }
-        .product-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
-        .product-price { color: var(--accent-color); font-weight: bold; font-size: 13px; }
-        
-        .delete-btn { position: absolute; top: 8px; right: 8px; background: var(--danger-color); color: white; border: none; border-radius: 50%; width: 26px; height: 26px; font-weight: bold; cursor: pointer; z-index: 10; }
+        .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 16px; }
+        .product-card {
+            background: var(--card-bg); border-radius: 14px; overflow: hidden;
+            border: 1px solid var(--border-color); position: relative; display: flex; flex-direction: column;
+        }
+        .product-card img { width: 100%; height: 130px; object-fit: cover; }
+        .product-info { padding: 10px; display: flex; flex-direction: column; gap: 4px; }
+        .product-title { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .product-price { color: var(--accent-color); font-weight: 700; font-size: 13px; }
 
-        .sheet-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: flex-end; z-index: 200; }
-        .bottom-sheet { background: var(--card-bg); width: 100%; border-top-left-radius: 16px; border-top-right-radius: 16px; padding: 16px; max-height: 85vh; overflow-y: auto; }
-        .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        
-        .form-input { width: 100%; padding: 10px; background: #2a2a2a; border: 1px solid var(--border-color); border-radius: 8px; color: white; margin-bottom: 10px; }
-        .btn-primary { width: 100%; padding: 12px; background: var(--accent-color); border: none; border-radius: 8px; color: white; font-weight: bold; cursor: pointer; }
+        .delete-btn {
+            position: absolute; top: 8px; right: 8px; background: var(--danger-color);
+            color: white; border: none; border-radius: 50%; width: 26px; height: 26px;
+            font-size: 12px; font-weight: bold; cursor: pointer; z-index: 10;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+
+        .sheet-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+            display: flex; align-items: flex-end; z-index: 200; backdrop-filter: blur(4px);
+        }
+        .bottom-sheet {
+            background: var(--card-bg); width: 100%; border-top-left-radius: 20px;
+            border-top-right-radius: 20px; padding: 20px; max-height: 85vh; overflow-y: auto;
+        }
+        .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+
+        .form-input {
+            width: 100%; padding: 12px; background: #0f172a; border: 1px solid var(--border-color);
+            border-radius: 10px; color: white; margin-bottom: 10px; font-size: 14px; outline: none;
+        }
+        .form-input:focus { border-color: var(--accent-color); }
+        .btn-primary {
+            width: 100%; padding: 12px; background: var(--accent-color); border: none;
+            border-radius: 10px; color: white; font-weight: bold; font-size: 15px; cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo">SHOD Mebel</div>
+        <div class="logo">SHOD MEBEL</div>
         <div class="header-actions">
+            <!-- Faqat Admin uchun + tugmasi -->
             <button class="icon-btn hidden" id="adminAddProductBtn"><i data-lucide="plus"></i></button>
-            <button class="icon-btn" id="searchToggleBtn"><i data-lucide="search"></i></button>
-            <button class="icon-btn" id="cartToggleBtn"><i data-lucide="shopping-bag"></i></button>
+            <button class="icon-btn"><i data-lucide="search"></i></button>
         </div>
     </header>
 
-    <div class="categories" id="categoriesContainer">
+    <div class="categories">
         <button class="cat-btn active" data-cat="all">Barchasi</button>
         <button class="cat-btn" data-cat="bedroom">Yotoqxona</button>
         <button class="cat-btn" data-cat="kitchen">Oshxona</button>
@@ -83,16 +119,16 @@
                 </div>
                 <div style="display: flex; gap: 8px;">
                     <input type="text" id="newProdColor" placeholder="Rangi" class="form-input" />
-                    <input type="text" id="newProdMaterial" placeholder="Materiali (MDF, Yog'och)" class="form-input" />
+                    <input type="text" id="newProdMaterial" placeholder="Materiali" class="form-input" />
                 </div>
 
-                <textarea id="newProdDesc" placeholder="Mebel haqida tavsif" class="form-input" rows="3"></textarea>
+                <textarea id="newProdDesc" placeholder="Mebel haqida tavsif" class="form-input" rows="2"></textarea>
                 <input type="url" id="newProdMediaUrl" placeholder="Rasm URL manzili" required class="form-input" />
                 
-                <label style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 14px;">
+                <label style="display: flex; align-items: center; gap: 8px; margin-bottom: 14px; font-size: 13px; color: var(--text-muted);">
                     <input type="checkbox" id="newProdIsCustom" /> Buyurtmaga tayyorlanadi (Custom)
                 </label>
-                <button type="submit" class="btn-primary">Saqlash va Ko'rsatish</button>
+                <button type="submit" class="btn-primary">Katalogga qo'shish</button>
             </form>
         </div>
     </div>
