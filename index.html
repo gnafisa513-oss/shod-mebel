@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="uz">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Shod Mebel — Modern Furniture Store</title>
     <!-- Telegram WebApp JS -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -11,9 +13,12 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div id="app" class="app-container">
         <!-- HEADER -->
@@ -22,8 +27,11 @@
                 <h1 class="brand-title">Shod Mebel</h1>
                 <span class="brand-subtitle">Modern furniture</span>
             </div>
-            
+
             <div class="header-actions">
+                <button class="icon-btn admin-btn hidden" id="adminAddProductBtn" aria-label="Yangi mahsulot qo'shish">
+                    <i data-lucide="plus-circle"></i>
+                </button>
                 <button class="icon-btn" id="searchToggleBtn" aria-label="Qidirish">
                     <i data-lucide="search"></i>
                 </button>
@@ -42,7 +50,8 @@
         <div class="search-bar-container hidden" id="searchBarContainer">
             <div class="search-input-wrapper">
                 <i data-lucide="search" class="search-icon"></i>
-                <input type="text" id="searchInput" placeholder="Mebel qidirish (nom, material, tur)..." autocomplete="off">
+                <input type="text" id="searchInput" placeholder="Mebel qidirish (nom, material, tur)..."
+                    autocomplete="off">
                 <button class="clear-btn hidden" id="searchClearBtn" aria-label="Tozalash">
                     <i data-lucide="x"></i>
                 </button>
@@ -56,11 +65,11 @@
         <!-- HERO SECTION -->
         <section class="hero-section" id="heroSection">
             <div class="hero-content">
-                <span class="hero-tag">Premium To'plam</span>
-                <h2 class="hero-title">Make your home feel better.</h2>
-                <p class="hero-subtitle">Modern furniture designed for comfort and everyday life.</p>
+                <span class="hero-tag">Premium to'plam</span>
+                <h2 class="hero-title">Uyingiz uchun yasalgan mebel.</h2>
+                <p class="hero-subtitle">Har kunlik hayot uchun qulay va zamonaviy mebellar to'plami.</p>
                 <button class="btn btn-hero" id="heroCtaBtn">
-                    <span>Explore Furniture</span>
+                    <span>Mebellarni ko'rish</span>
                     <i data-lucide="arrow-down-right"></i>
                 </button>
             </div>
@@ -186,9 +195,11 @@
                 <!-- Sticky Bottom Action Bar -->
                 <div class="sheet-footer">
                     <div class="quantity-selector">
-                        <button class="qty-btn" id="modalQtyMinus" aria-label="Kamaytirish"><i data-lucide="minus"></i></button>
+                        <button class="qty-btn" id="modalQtyMinus" aria-label="Kamaytirish"><i
+                                data-lucide="minus"></i></button>
                         <span class="qty-value" id="modalQtyVal">1</span>
-                        <button class="qty-btn" id="modalQtyPlus" aria-label="Oshirish"><i data-lucide="plus"></i></button>
+                        <button class="qty-btn" id="modalQtyPlus" aria-label="Oshirish"><i
+                                data-lucide="plus"></i></button>
                     </div>
                     <button class="btn btn-primary btn-add-cart" id="modalAddToCartBtn">
                         <i data-lucide="shopping-bag"></i>
@@ -349,7 +360,8 @@
                         </div>
                     </div>
                     <h2 class="success-title">Buyurtmangiz qabul qilindi!</h2>
-                    <p class="success-subtitle">Tez orada operatorimiz siz bilan bog'lanadi va tafsilotlarni tasdiqlaydi.</p>
+                    <p class="success-subtitle">Tez orada operatorimiz siz bilan bog'lanadi va tafsilotlarni
+                        tasdiqlaydi.</p>
 
                     <div class="order-info-card">
                         <div class="order-info-row">
@@ -375,6 +387,90 @@
 
     </div>
 
+    <!-- CHECKOUT & CUSTOMER INFO MODAL -->
+    <div class="sheet-overlay hidden" id="checkoutModalOverlay">
+        <div class="bottom-sheet checkout-sheet" id="checkoutSheet">
+            <div class="sheet-handle-area">
+                <div class="sheet-handle"></div>
+                <div class="sheet-header-title">
+                    <h3>Buyurtmani rasmiylashtirish</h3>
+                    <span class="cart-subtitle">Ma'lumotlaringizni kiriting</span>
+                </div>
+                <button class="close-sheet-btn" id="closeCheckoutSheetBtn" aria-label="Yopish">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+
+            <div class="sheet-scroll-content">
+                <form id="checkoutForm" onsubmit="return false;">
+                    <!-- Ism-Familiya -->
+                    <div class="form-group">
+                        <label for="custName" class="form-label">Ism va Familiya <span class="required">*</span></label>
+                        <input type="text" id="custName" class="form-input" placeholder="Masalan: Ali Valiyev" required>
+                    </div>
+
+                    <!-- Telefon raqam -->
+                    <div class="form-group">
+                        <label for="custPhone" class="form-label">Telefon raqam <span class="required">*</span></label>
+                        <input type="tel" id="custPhone" class="form-input" placeholder="+998 90 123 45 67"
+                            value="+998 " required>
+                    </div>
+
+                    <!-- Lokatsiya tanlash -->
+                    <div class="form-group">
+                        <label class="form-label">Yetkazib berish manzili <span class="required">*</span></label>
+                        <div class="location-box">
+                            <button type="button" class="btn-location" id="getLocationBtn">
+                                <i data-lucide="map-pin"></i>
+                                <span id="locationBtnText">Joriy lokatsiyani aniqlash</span>
+                            </button>
+                            <div class="location-status hidden" id="locationStatus">
+                                <i data-lucide="check-circle-2"></i>
+                                <span id="locationAddressText">Lokatsiya aniqlandi</span>
+                            </div>
+                        </div>
+                        <input type="hidden" id="custLat" name="latitude">
+                        <input type="hidden" id="custLng" name="longitude">
+                    </div>
+                </form>
+            </div>
+
+            <div class="sheet-footer">
+                <button class="btn btn-primary btn-block" id="confirmOrderBtn" disabled>
+                    <span>Buyurtmani tasdiqlash</span>
+                    <i data-lucide="check"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- Admin Add Product Modal -->
+    <div id="adminProductModalOverlay" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>➕ Yangi mebel qo'shish</h3>
+                <button data-close-modal="adminProductModalOverlay" class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="adminAddProductForm">
+                    <input type="text" id="newProdTitle" placeholder="Mebel nomi" required class="input-field" />
+                    <input type="text" id="newProdCategory" placeholder="Kategoriya (masalan: Divan)" required
+                        class="input-field" />
+                    <input type="text" id="newProdPrice" placeholder="Narxi (masalan: 2 500 000 so'm)" required
+                        class="input-field" />
+                    <textarea id="newProdDesc" placeholder="Tavsif (opisaniye)" class="input-field"></textarea>
+                    <input type="text" id="newProdMediaUrl" placeholder="Rasm/Video URL manzili" required
+                        class="input-field" />
+                    <label style="display: flex; align-items: center; gap: 8px; margin-top: 10px;">
+                        <input type="checkbox" id="newProdIsCustom" /> Buyurtmaga tayyorlanadi (Custom)
+                    </label>
+                    <button type="submit" class="primary-btn" style="margin-top: 15px;">Saqlash</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
     <script src="script.js"></script>
 </body>
+
 </html>
