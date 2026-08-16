@@ -1741,3 +1741,31 @@ a:focus-visible {
     outline: 2px solid var(--brass);
     outline-offset: 2px;
 }
+
+/* Admin product controls */
+.product-card-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+}
+.product-card-actions .btn-card-add {
+    flex: 1;
+    margin-top: 0;
+}
+.admin-delete-product {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-full);
+    background: var(--danger-tint);
+    color: var(--danger);
+}
+.admin-delete-product svg,
+.admin-delete-product i {
+    width: 18px;
+    height: 18px;
+}
