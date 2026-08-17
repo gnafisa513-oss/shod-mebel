@@ -4,7 +4,7 @@ const tg = window.Telegram?.WebApp;
 if (tg) tg.expand();
 
 const userTelegramId = tg?.initDataUnsafe?.user?.id;
-const ADMIN_IDS = [123456789];
+const ADMIN_IDS = [7771150533];
 const isAdmin = ADMIN_IDS.includes(userTelegramId) || true; // Sinash uchun
 
 let products = [];
