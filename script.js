@@ -1,4 +1,4 @@
-const API_BASE_URL = "https://backend-domainiz.render.com"; // Yoki serveringiz IP adresi / Render manzili
+const API_BASE_URL = "http://127.0.0.1:8000";
 
 const tg = window.Telegram?.WebApp;
 if (tg) tg.expand();
