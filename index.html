@@ -3,21 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SHOD Mebel</title>
+    <title>SHOD Mebel - Mebel Katalogi</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
+    <!-- Main Container -->
     <div class="container">
         <!-- Header -->
         <header>
-            <h1>SHOD Mebel</h1>
-            <button id="adminAddProductBtn" class="admin-btn hidden">+ Mebel Qo'shish</button>
+            <div class="header-content">
+                <h1>SHOD Mebel</h1>
+                <div class="header-actions">
+                    <button id="cartBtn" class="cart-btn" title="Savatcha">
+                        🛒 <span id="cartCount" class="badge">0</span>
+                    </button>
+                    <button id="adminPanelBtn" class="admin-panel-btn hidden" title="Admin Panel">
+                        ⚙️
+                    </button>
+                </div>
+            </div>
         </header>
 
-        <!-- Kategoriya Bo'limlari -->
-        <div class="categories">
+        <!-- Search Bar -->
+        <div class="search-bar">
+            <input 
+                type="text" 
+                id="searchInput" 
+                placeholder="Mebelni qidiring..." 
+                class="search-input"
+            >
+            <button id="searchBtn" class="search-btn">🔍</button>
+        </div>
+
+        <!-- Categories -->
+        <div class="categories-scroll">
             <button class="cat-btn active" data-cat="all">Barchasi</button>
             <button class="cat-btn" data-cat="Yotoqxona">Yotoqxona</button>
             <button class="cat-btn" data-cat="Mehmonxona">Mehmonxona</button>
@@ -25,48 +45,301 @@
             <button class="cat-btn" data-cat="Ofis">Ofis</button>
         </div>
 
-        <!-- Mebellar Katalogi -->
+        <!-- Main Content Area -->
         <main>
-            <div id="productsGrid" class="products-grid">
-                <!-- Mebellar JS orqali shu yerga yuklanadi -->
+            <!-- Products Grid -->
+            <div id="productsGrid" class="products-grid loading">
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="empty-state hidden">
+                <div class="empty-icon">📭</div>
+                <p>Mebellar topilmadi</p>
+            </div>
+
+            <!-- Error State -->
+            <div id="errorState" class="error-state hidden">
+                <div class="error-icon">⚠️</div>
+                <p id="errorMessage">Xatolik yuz berdi. Iltimos qaytadan urinib ko'ring.</p>
+                <button id="retryBtn" class="retry-btn">🔄 Qaytadan urinish</button>
             </div>
         </main>
     </div>
 
-    <!-- Admin Modal (Yangi mebel qo'shish oynasi) -->
-    <div id="adminProductModalOverlay" class="modal-overlay hidden">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Yangi Mebel Qo'shish</h2>
-                <button id="closeAdminModalBtn" class="close-btn">&times;</button>
+    <!-- ========================================
+         MODALS
+         ======================================== -->
+
+    <!-- Product Details Modal -->
+    <div id="productDetailModal" class="modal-overlay hidden">
+        <div class="modal-content modal-lg">
+            <button class="modal-close" onclick="closeProductDetailModal()">&times;</button>
+            
+            <div id="productDetailContent" class="product-detail-content">
+                <!-- Loaded dynamically -->
             </div>
-            <form id="adminAddProductForm">
-                <input type="text" id="newProdTitle" placeholder="Mebel nomi" required>
-                <select id="newProdCategory" required>
-                    <option value="Yotoqxona">Yotoqxona</option>
-                    <option value="Mehmonxona">Mehmonxona</option>
-                    <option value="Oshxona">Oshxona</option>
-                    <option value="Ofis">Ofis</option>
-                </select>
-                <input type="number" id="newProdPrice" placeholder="Narxi (so'm)" required>
-                <input type="text" id="newProdMediaUrl" placeholder="Rasm URL manzili" required>
-                <textarea id="newProdDesc" placeholder="Tavsif (ixtiyoriy)"></textarea>
-                <div class="form-row">
-                    <input type="text" id="newProdHeight" placeholder="Balandligi">
-                    <input type="text" id="newProdWidth" placeholder="Eni">
+
+            <div class="modal-actions">
+                <button id="addToCartBtn" class="btn btn-primary btn-lg">🛒 Savatga qo'shish</button>
+                <button class="btn btn-secondary btn-lg" onclick="closeProductDetailModal()">Bekor qilish</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shopping Cart Modal -->
+    <div id="cartModal" class="modal-overlay hidden">
+        <div class="modal-content modal-md">
+            <div class="modal-header">
+                <h2>Savatcha</h2>
+                <button class="modal-close" onclick="closeCartModal()">&times;</button>
+            </div>
+
+            <div id="cartItems" class="cart-items">
+                <!-- Loaded dynamically -->
+            </div>
+
+            <div id="cartEmpty" class="empty-state hidden">
+                <div class="empty-icon">🛒</div>
+                <p>Savatcha bo'sh</p>
+            </div>
+
+            <div id="cartSummary" class="cart-summary hidden">
+                <div class="summary-line">
+                    <span>Jami:</span>
+                    <strong id="cartTotal">0 so'm</strong>
                 </div>
-                <div class="form-row">
-                    <input type="text" id="newProdColor" placeholder="Rangi">
-                    <input type="text" id="newProdMaterial" placeholder="Materiali">
+                <button id="checkoutBtn" class="btn btn-primary btn-lg">Buyurtma berish</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Form Modal -->
+    <div id="orderModal" class="modal-overlay hidden">
+        <div class="modal-content modal-md">
+            <div class="modal-header">
+                <h2>Buyurtma Forması</h2>
+                <button class="modal-close" onclick="closeOrderModal()">&times;</button>
+            </div>
+
+            <form id="orderForm" class="form">
+                <div class="form-group">
+                    <label>Ism *</label>
+                    <input type="text" id="orderName" placeholder="Sizning ismingiz" required>
                 </div>
-                <label class="checkbox-label">
-                    <input type="checkbox" id="newProdIsCustom"> Buyurtma asosida
-                </label>
-                <button type="submit" class="submit-btn">Saqlash</button>
+
+                <div class="form-group">
+                    <label>Telefon raqami *</label>
+                    <input type="tel" id="orderPhone" placeholder="+998 XX XXX XX XX" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Manzil</label>
+                    <input type="text" id="orderAddress" placeholder="Yashash manzilingiz (ixtiyoriy)">
+                </div>
+
+                <div class="form-group">
+                    <label>Izoh</label>
+                    <textarea id="orderComment" placeholder="Qo'shimcha ma'lumot (ixtiyoriy)" rows="3"></textarea>
+                </div>
+
+                <div class="form-summary">
+                    <div class="summary-line">
+                        <span>Jami narx:</span>
+                        <strong id="orderTotalPrice">0 so'm</strong>
+                    </div>
+                    <div class="summary-line">
+                        <span>Buyurtma soni:</span>
+                        <strong id="orderItemCount">0</strong>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg">Buyurtmani yuborish</button>
+                <button type="button" class="btn btn-secondary btn-lg" onclick="closeOrderModal()">Bekor qilish</button>
             </form>
         </div>
     </div>
 
+    <!-- Custom Furniture Order Modal -->
+    <div id="customOrderModal" class="modal-overlay hidden">
+        <div class="modal-content modal-md">
+            <div class="modal-header">
+                <h2>✏️ Buyurtmaga Mebel Yasatish</h2>
+                <button class="modal-close" onclick="closeCustomOrderModal()">&times;</button>
+            </div>
+
+            <form id="customOrderForm" class="form">
+                <div class="form-group">
+                    <label>Ism *</label>
+                    <input type="text" id="customName" placeholder="Sizning ismingiz" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Telefon raqami *</label>
+                    <input type="tel" id="customPhone" placeholder="+998 XX XXX XX XX" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Mebel turi *</label>
+                    <input type="text" id="customFurnitureType" placeholder="Masalan: Yotoq, Divan, Stol" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Eni (sm) *</label>
+                        <input type="number" id="customWidth" placeholder="Masalan: 200" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Balandligi (sm) *</label>
+                        <input type="number" id="customHeight" placeholder="Masalan: 150" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Chuqurligi (sm)</label>
+                    <input type="number" id="customDepth" placeholder="Masalan: 60 (ixtiyoriy)">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Materiali *</label>
+                        <input type="text" id="customMaterial" placeholder="Masalan: MDF, LDSP" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Rangi *</label>
+                        <input type="text" id="customColor" placeholder="Masalan: Oq, Qora" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Miqdor *</label>
+                    <input type="number" id="customQuantity" min="1" value="1" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Qo'shimcha tavsif</label>
+                    <textarea id="customDescription" placeholder="O'zingiz xohlagan o'ziga xos xususiyatlar" rows="3"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg">Buyurtmani yuborish</button>
+                <button type="button" class="btn btn-secondary btn-lg" onclick="closeCustomOrderModal()">Bekor qilish</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Panel Modal -->
+    <div id="adminPanelModal" class="modal-overlay hidden">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h2>⚙️ Admin Panel</h2>
+                <button class="modal-close" onclick="closeAdminPanelModal()">&times;</button>
+            </div>
+
+            <div class="admin-tabs">
+                <button class="admin-tab-btn active" data-tab="products">📦 Mebellar</button>
+                <button class="admin-tab-btn" data-tab="orders">📋 Buyurtmalar</button>
+                <button class="admin-tab-btn" data-tab="analytics">📊 Hisobot</button>
+            </div>
+
+            <!-- Products Tab -->
+            <div id="productsTab" class="admin-tab-content active">
+                <button id="adminAddProductBtn" class="btn btn-primary btn-sm">+ Yangi Mebel Qo'shish</button>
+                <div id="adminProductsList" class="admin-products-list">
+                    <!-- Loaded dynamically -->
+                </div>
+            </div>
+
+            <!-- Orders Tab -->
+            <div id="ordersTab" class="admin-tab-content hidden">
+                <div id="adminOrdersList" class="admin-orders-list">
+                    <!-- Loaded dynamically -->
+                </div>
+            </div>
+
+            <!-- Analytics Tab -->
+            <div id="analyticsTab" class="admin-tab-content hidden">
+                <div id="analyticsContent" class="analytics-content">
+                    <!-- Loaded dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Product Modal (Admin) -->
+    <div id="adminAddProductModal" class="modal-overlay hidden">
+        <div class="modal-content modal-md">
+            <div class="modal-header">
+                <h2>Yangi Mebel Qo'shish</h2>
+                <button class="modal-close" onclick="closeAdminAddProductModal()">&times;</button>
+            </div>
+
+            <form id="adminAddProductForm" class="form">
+                <div class="form-group">
+                    <label>Mebel nomi *</label>
+                    <input type="text" id="adminProdTitle" placeholder="Masalan: Modern Yotoq" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Kategoriya *</label>
+                    <select id="adminProdCategory" required>
+                        <option value="">Tanlang...</option>
+                        <option value="Yotoqxona">Yotoqxona</option>
+                        <option value="Mehmonxona">Mehmonxona</option>
+                        <option value="Oshxona">Oshxona</option>
+                        <option value="Ofis">Ofis</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Narxi (so'm) *</label>
+                    <input type="number" id="adminProdPrice" placeholder="Masalan: 5000000" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Rasm URL *</label>
+                    <input type="url" id="adminProdImageUrl" placeholder="https://example.com/image.jpg" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Tavsif</label>
+                    <textarea id="adminProdDescription" placeholder="Mahsulot haqida ma'lumot" rows="3"></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Balandligi (sm)</label>
+                        <input type="text" id="adminProdHeight" placeholder="Masalan: 200">
+                    </div>
+                    <div class="form-group">
+                        <label>Eni (sm)</label>
+                        <input type="text" id="adminProdWidth" placeholder="Masalan: 150">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Materiali</label>
+                        <input type="text" id="adminProdMaterial" placeholder="Masalan: MDF">
+                    </div>
+                    <div class="form-group">
+                        <label>Rangi</label>
+                        <input type="text" id="adminProdColor" placeholder="Masalan: Oq, Qora">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg">Mebelni Qo'shish</button>
+                <button type="button" class="btn btn-secondary btn-lg" onclick="closeAdminAddProductModal()">Bekor qilish</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Scripts -->
     <script src="script.js"></script>
 </body>
 </html>
