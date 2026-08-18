@@ -6,13 +6,11 @@ if (tg) {
     tg.expand();
 }
 
-// Telegram ID yoki Admin tekshiruvi
 const userTelegramId = tg?.initDataUnsafe?.user?.id;
-// ADMIN ID laringizni shu massivga kiriting
 const ADMIN_IDS = [7771150533]; 
 
-// Test rejimida admin tugmasi ko'rinishi uchun true qilingan
-const isAdmin = true; // Keyinchalik: ADMIN_IDS.includes(userTelegramId)
+// Localhostda tekshirish uchun true qilishingiz mumkin, real rejimda ID orqali aniqlanadi
+const isAdmin = ADMIN_IDS.includes(userTelegramId) || true; 
 
 let products = [];
 let selectedCategory = "all";
@@ -20,7 +18,6 @@ let selectedCategory = "all";
 document.addEventListener("DOMContentLoaded", async () => {
     if (window.lucide) lucide.createIcons();
 
-    // Admin bo'lsa, tugmani ko'rsatish
     if (isAdmin) {
         const adminBtn = document.getElementById("adminAddProductBtn");
         if (adminBtn) adminBtn.classList.remove("hidden");
@@ -30,7 +27,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     setupEvents();
 });
 
-// FastAPI'dan mahsulotlarni olish
 async function loadProductsFromAPI() {
     try {
         const response = await fetch(`${API_BASE_URL}/api/products`);
@@ -42,12 +38,11 @@ async function loadProductsFromAPI() {
         console.error("API yuklashda xatolik:", err);
         const grid = document.getElementById("productsGrid");
         if (grid) {
-            grid.innerHTML = `<p class="error-msg">Mebellarni yuklab bo'lmadi. Backend server yoqilganini tekshiring.</p>`;
+            grid.innerHTML = `<p style="color:red; text-align:center; grid-column: 1/-1;">Mebellarni yuklab bo'lmadi. Python (main.py) ishga tushirilganini tekshiring.</p>`;
         }
     }
 }
 
-// Katalogga chiqarish
 function renderProducts() {
     const grid = document.getElementById("productsGrid");
     if (!grid) return;
@@ -56,10 +51,10 @@ function renderProducts() {
 
     const filtered = selectedCategory === "all" 
         ? products 
-        : products.filter(p => p.category === selectedCategory);
+        : products.filter(p => p.category.toLowerCase() === selectedCategory.toLowerCase());
 
     if (filtered.length === 0) {
-        grid.innerHTML = `<p class="empty-msg">Ushbu bo'limda hozircha mebellar yo'q.</p>`;
+        grid.innerHTML = `<p style="text-align:center; grid-column: 1/-1; color:#94a3b8;">Ushbu bo'limda hozircha mebellar yo'q.</p>`;
         return;
     }
 
@@ -79,9 +74,7 @@ function renderProducts() {
     });
 }
 
-// Hodisalarni ulash
 function setupEvents() {
-    // Kategoriya tugmalari
     document.querySelectorAll(".cat-btn").forEach(btn => {
         btn.addEventListener("click", (e) => {
             document.querySelectorAll(".cat-btn").forEach(b => b.classList.remove("active"));
@@ -91,7 +84,6 @@ function setupEvents() {
         });
     });
 
-    // Admin modal elementlari
     const modal = document.getElementById("adminProductModalOverlay");
     const openBtn = document.getElementById("adminAddProductBtn");
     const closeBtn = document.getElementById("closeAdminModalBtn");
@@ -103,7 +95,6 @@ function setupEvents() {
         closeBtn.addEventListener("click", () => modal.classList.add("hidden"));
     }
 
-    // Formani FastAPI'ga yuborish
     const form = document.getElementById("adminAddProductForm");
     if (form) {
         form.addEventListener("submit", async (e) => {
@@ -143,9 +134,8 @@ function setupEvents() {
     }
 }
 
-// Mebelni o'chirish
 async function deleteProduct(id) {
-    if (confirm("Ushbu mebelni o'chirmoqchimisiz?")) {
+    if (confirm("Ushbu mebelni bazadan o'chirmoqchimisiz?")) {
         try {
             const res = await fetch(`${API_BASE_URL}/api/products/${id}`, {
                 method: "DELETE"
